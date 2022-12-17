@@ -39,12 +39,52 @@
 
 <p>-c 指定打包配置文件 “rollup.config.js”</p>
 <p>-w 监控文件变化</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">npm <span class="built_in">run</span> dev</span><br></pre></td></tr></table></figure>]]></content>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">npm <span class="built_in">run</span> dev</span><br></pre></td></tr></table></figure>
+
+<h2 id="最后的目录结构"><a href="#最后的目录结构" class="headerlink" title="最后的目录结构"></a>最后的目录结构</h2><p><img data-src="https://s1.ax1x.com/2022/12/17/zbK3cT.png" alt="执行npm run dev之后的结构"></p>
+]]></content>
       <categories>
         <category>Vue2源码</category>
       </categories>
       <tags>
         <tag>开发环境</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>初始化数据</title>
+    <url>/2022/12/17/%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE/</url>
+    <content><![CDATA[<p>目标：创建实例对象并实现状态初始化</p>
+<span id="more"></span>
+
+<blockquote>
+<p>响应式变化的核心：监听数据变化，包括取值和更改</p>
+</blockquote>
+<h2 id="实例化Vue"><a href="#实例化Vue" class="headerlink" title="实例化Vue"></a>实例化Vue</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">dist/index.<span class="property">html</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> <span class="title class_">Vue</span>(&#123;</span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;Skiy&#x27;</span>,</span><br><span class="line">      <span class="attr">age</span>: <span class="number">18</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="建立初始化方法"><a href="#建立初始化方法" class="headerlink" title="建立初始化方法"></a>建立初始化方法</h2><p>为了保证代码可维护和低耦合</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">src/index.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; initMixin &#125; <span class="keyword">from</span> <span class="string">&quot;./init&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* 参数：options</span></span><br><span class="line"><span class="comment">* 功能：Vue实例化时传输过来的参数（实例化参数）</span></span><br><span class="line"><span class="comment">* 类型：一个对象，可能包含 el、data、 methods 等等</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">function Vue(<span class="keyword">options</span>)&#123;</span><br><span class="line">  <span class="keyword">this</span>._init(<span class="keyword">options</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是一个引入使用即执行的函数</span></span><br><span class="line">initMixin(Vue);</span><br><span class="line"></span><br><span class="line">export <span class="keyword">default</span> Vue;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">src/init.<span class="property">js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 目的：给Vue增加init方法</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">initMixin</span>(<span class="params">Vue</span>)&#123;</span><br><span class="line">  <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_init</span> = <span class="keyword">function</span>(<span class="params">options</span>)&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="挂载实例化参数"><a href="#挂载实例化参数" class="headerlink" title="挂载实例化参数"></a>挂载实例化参数</h2><p>方便后续方法获取和用户调用</p>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><span class="line">src/init.js</span><br><span class="line"></span><br><span class="line">...&#123;</span><br><span class="line">  Vue.prototype._init = <span class="keyword">function</span><span class="params">(options)</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">    * this指向：Vue</span></span><br><span class="line"><span class="comment">    * 原因：this._init这函数调用的</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">const</span> vm = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 实现挂载</span></span><br><span class="line">    vm.$options = options;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="初始化状态"><a href="#初始化状态" class="headerlink" title="初始化状态"></a>初始化状态</h2><p>状态：包括属性、方法、事件等等</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">src/init.<span class="property">js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; initState &#125; <span class="keyword">from</span> <span class="string">&quot;./state&quot;</span>;</span><br><span class="line"></span><br><span class="line">...&#123;</span><br><span class="line">  <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_init</span> = <span class="keyword">function</span>(<span class="params">options</span>)&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 初始化状态</span></span><br><span class="line">    <span class="title function_">initState</span>(vm);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">src/state.js</span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* 参数：vm</span></span><br><span class="line"><span class="comment">* 功能：初始化状态（data、props、methods等等）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">export <span class="keyword">function</span> init<span class="constructor">State(<span class="params">vm</span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 获取实例化参数</span></span><br><span class="line">  const opts = vm.$options;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 初始化 data 属性</span></span><br><span class="line">  <span class="keyword">if</span>(opts.data)&#123;</span><br><span class="line">    init<span class="constructor">Data(<span class="params">vm</span>)</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="初始化-data-属性"><a href="#初始化-data-属性" class="headerlink" title="初始化 data 属性"></a>初始化 data 属性</h2><figure class="highlight haskell"><table><tr><td class="code"><pre><span class="line"><span class="title">src</span>/state.js</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line">* 参数：vm</span><br><span class="line">* 功能：代理<span class="class"><span class="keyword">data</span>属性</span></span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line"><span class="title">function</span> initData(vm)&#123;</span><br><span class="line">  // <span class="class"><span class="keyword">data</span> 有两种状态：函数或对象（一般用函数）</span></span><br><span class="line">  <span class="keyword">let</span> <span class="class"><span class="keyword">data</span> = vm.$options.<span class="keyword">data</span>;</span></span><br><span class="line"></span><br><span class="line">  typeof <span class="class"><span class="keyword">data</span> === &#x27;function&#x27; ? <span class="keyword">data</span>.call(<span class="title">vm</span>) : <span class="keyword">data</span>;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>关于data为什么用函数：data的指针问题，若作为函数，那么到 initData 执行时指针才正真建立，而作为对象，从实例化时就确定了</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Vue2源码</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
       </tags>
   </entry>
 </search>
