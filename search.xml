@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2022/12/16/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+    <title>rollup环境搭建</title>
+    <url>/2022/12/17/rollup%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>起因：在写小程序过程中，需要一些轮子，发现大部分功能都是基于Vue来做，于是心血来潮就有这个学习项目了</p>
+<p>过程：学习Vue2源码，并学会一些代码思维，模仿即是学习</p>
+<p>结果：正在学习~待以后回来填写</p>
 <span id="more"></span>
 
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>在项目目录下生成package.json</p>
+<figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">npm</span> init -y</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h2 id="rollup的安装流程"><a href="#rollup的安装流程" class="headerlink" title="rollup的安装流程"></a>rollup的安装流程</h2><p>安装：rollup</p>
+<p>插件，编译高级语法：rollup-plugin-babel</p>
+<p>核心模块：@babel&#x2F;core</p>
+<p>预设，编译高级语法：@babel&#x2F;preset-env</p>
+<p>开发依赖：–save–dev</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">npm install <span class="keyword">rollup</span> <span class="keyword">rollup</span><span class="operator">-</span>plugin<span class="operator">-</span>babel <span class="variable">@babel</span><span class="operator">/</span>core <span class="variable">@babel</span><span class="operator">/</span>preset<span class="operator">-</span>env <span class="comment">--save--dev</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>两个编译高级语法的差别在于：配置文件不同，使用方式不同，都可以在Rollup 配置文件（rollup.config.js）使用，第二个也可以在.babelrc文件中使用</p>
+</blockquote>
+<h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h2><ol>
+<li><p>创建配置文件：项目目录下，创建rollup.config.js</p>
+</li>
+<li><p>创建入口文件：项目目录下，创建 src &gt; index.js</p>
+</li>
+<li><p>指定打包入口和出口</p>
+</li>
+</ol>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span> 导入babel插件</span><br><span class="line">import babel from <span class="string">&#x27;rollup-plugin-babel&#x27;</span>;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  <span class="regexp">//</span> 入口</span><br><span class="line">  input: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">  <span class="regexp">//</span> 出口</span><br><span class="line">  output: &#123;</span><br><span class="line">    <span class="regexp">//</span> 出口文件</span><br><span class="line">    file: <span class="string">&#x27;./dist/vue.js&#x27;</span>,</span><br><span class="line">    <span class="regexp">//</span> 全局变量名称</span><br><span class="line">    name: <span class="string">&#x27;Vue&#x27;</span>,</span><br><span class="line">    <span class="regexp">//</span> 打包后的文件格式，umd: 用于浏览器、Node.js 和其他环境的通用模块定义</span><br><span class="line">    format: <span class="string">&#x27;umd&#x27;</span>,</span><br><span class="line">    <span class="regexp">//</span> 希望可以调试源代码</span><br><span class="line">    sourcemap: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="regexp">//</span> 打包使用插件</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="regexp">//</span> 使用babel插件</span><br><span class="line">    <span class="regexp">//</span> 可以在这里加配置，但太长，所以在目录下创建</span><br><span class="line">    babel(&#123;</span><br><span class="line">      <span class="regexp">//</span> 排除打包文件</span><br><span class="line">      exclude: <span class="string">&#x27;node_modules/**&#x27;</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<h2 id="创建-babel文件并配置"><a href="#创建-babel文件并配置" class="headerlink" title="创建.babel文件并配置"></a>创建.babel文件并配置</h2><p>在目录下创建.babelrc，打包时自动使用这些配置</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="regexp">//</span> 添加预设</span><br><span class="line">  <span class="regexp">//</span> 预设可理解为：许多插件的集合</span><br><span class="line">  <span class="string">&quot;presets&quot;</span>:[</span><br><span class="line">    <span class="string">&quot;@babel/preset-env&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>BlogTest</title>
-    <url>/2022/12/16/BlogTest/</url>
-    <content><![CDATA[<p>Hello,this my first blog</p>
-<p>Hello,this my first blog</p>
-<p>Hello,this my first blog</p>
-<span id="more"></span>
+<h2 id="添加执行脚本"><a href="#添加执行脚本" class="headerlink" title="添加执行脚本"></a>添加执行脚本</h2><p>在 package.js 中的 scripts 添加脚本</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="attr">&quot;dev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rollup -cw&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>123456</p>
-]]></content>
+<p>-c 指定打包配置文件 “rollup.config.js”</p>
+<p>-w 监控文件变化</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">npm <span class="built_in">run</span> dev</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Vue2源码</category>
+      </categories>
+      <tags>
+        <tag>开发环境</tag>
+      </tags>
   </entry>
 </search>
