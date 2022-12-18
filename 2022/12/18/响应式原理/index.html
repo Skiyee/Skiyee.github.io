@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari_pinned_tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"skiyee.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="目标：基于defineProperty，对 data 数据进行劫持，实现响应式 关键学习点：指针，闭包，递归，this指向（这应该包括在指针里吧） 技巧：…arg(作为参数) &#x3D;&gt; []，会转换成数组; newObj &#x3D; Object.create(obj)，obj作为“新创对象(newObj)”的原型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="响应式原理">
+<meta property="og:url" content="https://skiyee.github.io/2022/12/18/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Skiy&#39;s Blog">
+<meta property="og:description" content="目标：基于defineProperty，对 data 数据进行劫持，实现响应式 关键学习点：指针，闭包，递归，this指向（这应该包括在指针里吧） 技巧：…arg(作为参数) &#x3D;&gt; []，会转换成数组; newObj &#x3D; Object.create(obj)，obj作为“新创对象(newObj)”的原型">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-18T01:53:46.000Z">
+<meta property="article:modified_time" content="2022-12-18T08:50:20.859Z">
+<meta property="article:author" content="Skiy">
+<meta property="article:tag" content="Javascript">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://skiyee.github.io/2022/12/18/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>响应式原理 | Skiy's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Skiy's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Code Always Going</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://skiyee.github.io/2022/12/18/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Skiy">
+      <meta itemprop="description" content="日常代码记录 💜">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Skiy's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          响应式原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-12-18 09:53:46 / 修改时间：16:50:20" itemprop="dateCreated datePublished" datetime="2022-12-18T09:53:46+08:00">2022-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vue2%E6%BA%90%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">Vue2源码</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>目标：基于defineProperty，对 data 数据进行劫持，实现响应式</p>
+<p>关键学习点：指针，闭包，递归，this指向（这应该包括在指针里吧）</p>
+<p>技巧：…arg(作为参数) &#x3D;&gt; []，会转换成数组; newObj &#x3D; Object.create(obj)，obj作为“新创对象(newObj)”的原型</p>
+<span id="more"></span>
+
+<h1 id="劫持-data"><a href="#劫持-data" class="headerlink" title="劫持 data"></a>劫持 data</h1><p>Vue2的问题：对整个data对象进行重写，性能差</p>
+<p>Object.defineProperty 只能劫持已存在的属性（理解：新增的）</p>
+<h2 id="劫持-data-对象"><a href="#劫持-data-对象" class="headerlink" title="劫持 data 对象"></a>劫持 data 对象</h2><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">src/state.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; observe &#125; from <span class="string">&#x27;/observe/index&#x27;</span>;</span><br><span class="line"><span class="params">...</span></span><br><span class="line">function initData(vm)&#123;</span><br><span class="line">  <span class="params">...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 劫持 data 对象</span></span><br><span class="line">  observe(<span class="built_in">data</span>);</span><br><span class="line">&#125; </span><br><span class="line"><span class="params">...</span></span><br></pre></td></tr></table></figure>
+
+<p>在src下创建 observe -&gt; index.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.<span class="property">js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断data对象里的属性是否被劫持过</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Observer</span>(data)&#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">data</span>)&#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">walk</span>(data);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 目的：循环data对象，对其数据依次劫持</span></span><br><span class="line">  <span class="title function_">walk</span>(<span class="params">data</span>)&#123;</span><br><span class="line">    <span class="title class_">Object</span>.<span class="title function_">keys</span>(data).<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span>=&gt;</span><span class="title function_">defineReactive</span>(data,key,data[key]));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 参数target：整个data对象，key：对象的属性，value：属性的值</span></span><br><span class="line"><span class="comment">* 目的：重写 data 对象的属性</span></span><br><span class="line"><span class="comment">* 特性：闭包，会保存上一次value的值</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">defineReactive</span>(<span class="params">target,key,value</span>)&#123;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(target, key, &#123;</span><br><span class="line">    <span class="title function_">get</span>(<span class="params"></span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_">set</span>(<span class="params">newValue</span>)&#123;</span><br><span class="line">      <span class="keyword">if</span>(newValue === value) <span class="keyword">return</span>;</span><br><span class="line">      <span class="keyword">return</span> value = newValue;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 参数：data 对象</span></span><br><span class="line"><span class="comment">* 目标：劫持</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">observe</span>(<span class="params">data</span>)&#123;</span><br><span class="line">  <span class="comment">// 当为 data 对象时才劫持</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> data !== <span class="string">&#x27;object&#x27;</span> || data == <span class="literal">null</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Observer</span>(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>关于劫持为什么只能是对象的原因：<br>若data里的属性作为一个值类型并处于第一层，那么它第一次创建实例就已经被劫持<br>而引用类型，只劫持当前的指针（也就是第一层），其对应的值（属性）并不会被劫持，所有才继续判断，需要结合后面才能理解这的写法<br>同时这里也为后面新增劫持作铺垫</p>
+</blockquote>
+<h2 id="让劫持的对象挂载-data"><a href="#让劫持的对象挂载-data" class="headerlink" title="让劫持的对象挂载_data"></a>让劫持的对象挂载_data</h2><p>劫持完data对象，此时若去打印vm（也就是实例），并不会发现数据被劫持，是因为data是一个函数（指针问题）</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">src/state.js</span><br><span class="line"><span class="params">...</span></span><br><span class="line">function initData(vm)&#123;</span><br><span class="line">  <span class="params">...</span></span><br><span class="line">  <span class="comment">// 挂载到实例Vue的属性 _data 上</span></span><br><span class="line">  vm._data = <span class="built_in">data</span>;</span><br><span class="line">  <span class="comment">// 劫持data对象属性</span></span><br><span class="line">  observe(<span class="built_in">data</span>);</span><br><span class="line">&#125; </span><br><span class="line"><span class="params">...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="代理-data的属性-到实例的全局"><a href="#代理-data的属性-到实例的全局" class="headerlink" title="代理 data的属性 到实例的全局"></a>代理 data的属性 到实例的全局</h2><p>目的：让 vm.name(原获取方式：vm._data.name) 能取到值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">src/state.<span class="property">js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">proxy</span>(<span class="params">vm,target,key</span>)&#123;</span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(vm, key, &#123;</span><br><span class="line">    <span class="title function_">get</span>(<span class="params"></span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> vm[target][key];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_">set</span>(<span class="params">newValue</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> vm[target][key] = newValue;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">initData</span>(<span class="params">vm</span>)&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 挂载到实例Vue的属性 _data 上</span></span><br><span class="line">  vm.<span class="property">_data</span> = data;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 劫持data对象属性</span></span><br><span class="line">  <span class="title function_">observe</span>(data);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 用 vm 代理 vm._data</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> data)&#123;</span><br><span class="line">    <span class="title function_">proxy</span>(vm,<span class="string">&#x27;_data&#x27;</span>,key);</span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>问题：若在get里面打印，其会输出两次，因为并非通过本身获取值和设置值，是通过已劫持对象_data来获取的</p>
+</blockquote>
+<h1 id="对象劫持"><a href="#对象劫持" class="headerlink" title="对象劫持"></a>对象劫持</h1><h2 id="劫持-data的属性-里的对象"><a href="#劫持-data的属性-里的对象" class="headerlink" title="劫持 data的属性 里的对象"></a>劫持 data的属性 里的对象</h2><p>可能看到主题会很懵，意思就是 <code>data:&#123; address: &#123; city:&#39;南极&#39; &#125; &#125;</code></p>
+<p>实现方式：递归</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.js</span><br><span class="line"></span><br><span class="line">export <span class="keyword">function</span> define<span class="constructor">Reactive(<span class="params">target</span>,<span class="params">key</span>,<span class="params">value</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 在observe方法里有一个[是否为对象判断]若value为值类型就直接return了，该递归就停止了</span></span><br><span class="line">  observe(value);<span class="operator"></span></span><br><span class="line"><span class="operator">  ...</span></span><br><span class="line"><span class="operator"></span>&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>data的属性是对象时，劫持该对象后，挂载到全局的是该对象的指针，“设置”该指针的属性所对应的值是不会触发set函数的，但get会被触发</p>
+</blockquote>
+<h1 id="数组劫持"><a href="#数组劫持" class="headerlink" title="数组劫持"></a>数组劫持</h1><p>若不作数组劫持，它会把所有的数组的key都作劫持，这是不合理的，若有1000个值，会劫持1000次，浪费性能</p>
+<p>而且数组大部分操作都是使用方法来增删改查，变异方法共有七个（修改原数组本身）</p>
+<h2 id="劫持数组"><a href="#劫持数组" class="headerlink" title="劫持数组"></a>劫持数组</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; newArrayProto &#125; form <span class="string">&#x27;observe/array.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Observer</span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="comment">// 判断是否为数组</span></span><br><span class="line">    <span class="keyword">if</span>(Array.isArray(<span class="keyword">data</span>))&#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 保留原数组特性，重写部分方法</span></span><br><span class="line">      <span class="keyword">data</span>.__proto__ = newArrayProto</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 重写数组方法</span></span><br><span class="line">      <span class="keyword">this</span>.observeArray(<span class="keyword">data</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.walk(<span class="keyword">data</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 参数：data属性里的数组</span></span><br><span class="line"><span class="comment">  * 功能：对数组里的值进行劫持，数组里的对象都会被劫持</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  observeArray(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="keyword">data</span>.forEach(item=&gt;observe(item)); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="重写变异方法"><a href="#重写变异方法" class="headerlink" title="重写变异方法"></a>重写变异方法</h2><p>创建 observe -&gt; array.js</p>
+<p>目的：让数组函数的原型继承给newArrayProto对象的原型</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">/src/observe/array.js</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取数组函数原型</span></span><br><span class="line">let oldArrayProto = Array.prototype;</span><br><span class="line"></span><br><span class="line"><span class="comment">// newArrayProto.__proto__ = oldArrayProto;</span></span><br><span class="line">export let newArrayProto = Object.create(oldArrayProto);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有变异方法: 指改变原数组</span></span><br><span class="line">let methods = [</span><br><span class="line">  <span class="string">&#x27;push&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;pop&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;shift&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;unshift&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;reverse&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sort&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;splice&#x27;</span></span><br><span class="line">];</span><br><span class="line"><span class="comment">// concat、slice：不会改变原数组</span></span><br><span class="line"> </span><br><span class="line">methods.forEach(method=&gt;&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 参数：args被转换成了数组: 1 =&gt; [1] </span></span><br><span class="line">  newArrayProto[method] = <span class="keyword">function</span><span class="params">(<span class="rest_arg">...args</span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// this指向调用该函数的对象：vm.hobby.pop(), 此时this就是hobby</span></span><br><span class="line">    <span class="comment">// 调用原始方法：切片编程</span></span><br><span class="line">    <span class="keyword">const</span> result = oldArrayProto[method].call(<span class="keyword">this</span>,...args);</span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 对新增的数据进行劫持</span></span><br><span class="line">    let inserted;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span>(method)&#123;</span><br><span class="line">      <span class="comment">// push、unshift都是插入</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;push&#x27;</span>:</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;unshift&#x27;</span>:</span><br><span class="line">        inserted = args;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="comment">// splice 增删都可以</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;splice&#x27;</span>:</span><br><span class="line">        <span class="comment">// 截取新增内容</span></span><br><span class="line">        inserted = args.slice(<span class="number">2</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="挂载-Oberver实例-到-data对象-自定义属性-ob-上"><a href="#挂载-Oberver实例-到-data对象-自定义属性-ob-上" class="headerlink" title="挂载 Oberver实例 到 data对象 自定义属性 ob 上"></a>挂载 Oberver实例 到 data对象 自定义属性 <strong>ob</strong> 上</h2><p>目的：是为了取到observeArray，同时为数据加了标识，证明被其已经被劫持过</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.js</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Observer</span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="keyword">data</span>)&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此时的data可以是数组也可以是对象, 需要设置成不可枚举，不然会变成死递归</span></span><br><span class="line">    Object.defineProperty(<span class="keyword">data</span>,<span class="string">&#x27;__ob__&#x27;</span>,&#123;</span><br><span class="line">      value: <span class="keyword">this</span>,</span><br><span class="line">      enumerable: <span class="literal">false</span></span><br><span class="line">    &#125;);</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/src/observe/array.js</span><br><span class="line"></span><br><span class="line">  newArrayProto[method] = <span class="keyword">function</span><span class="params">(<span class="rest_arg">...args</span>)</span>&#123;</span><br><span class="line">    let inserted;</span><br><span class="line">    let ob = <span class="keyword">this</span>.__ob__;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    if (inserted)&#123;</span><br><span class="line">      ob.observeArray(inserted);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="识别是否已被劫持"><a href="#识别是否已被劫持" class="headerlink" title="识别是否已被劫持"></a>识别是否已被劫持</h2><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">export function observe(<span class="built_in">data</span>)&#123;</span><br><span class="line">  <span class="params">...</span></span><br><span class="line">  <span class="comment">// 证明已经挂载到__ob__上</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">data</span>.__ob__ instanceof Observer)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">data</span>.__ob__;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="params">...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/17/%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE/" rel="prev" title="初始化数据">
+      <i class="fa fa-chevron-left"></i> 初始化数据
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%AB%E6%8C%81-data"><span class="nav-number">1.</span> <span class="nav-text">劫持 data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%AB%E6%8C%81-data-%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">劫持 data 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9%E5%8A%AB%E6%8C%81%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%8C%82%E8%BD%BD-data"><span class="nav-number">1.2.</span> <span class="nav-text">让劫持的对象挂载_data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86-data%E7%9A%84%E5%B1%9E%E6%80%A7-%E5%88%B0%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%85%A8%E5%B1%80"><span class="nav-number">1.3.</span> <span class="nav-text">代理 data的属性 到实例的全局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%8A%AB%E6%8C%81"><span class="nav-number">2.</span> <span class="nav-text">对象劫持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%AB%E6%8C%81-data%E7%9A%84%E5%B1%9E%E6%80%A7-%E9%87%8C%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.1.</span> <span class="nav-text">劫持 data的属性 里的对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%8A%AB%E6%8C%81"><span class="nav-number">3.</span> <span class="nav-text">数组劫持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%AB%E6%8C%81%E6%95%B0%E7%BB%84"><span class="nav-number">3.1.</span> <span class="nav-text">劫持数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E5%8F%98%E5%BC%82%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">重写变异方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD-Oberver%E5%AE%9E%E4%BE%8B-%E5%88%B0-data%E5%AF%B9%E8%B1%A1-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7-ob-%E4%B8%8A"><span class="nav-number">3.3.</span> <span class="nav-text">挂载 Oberver实例 到 data对象 自定义属性 ob 上</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%86%E5%88%AB%E6%98%AF%E5%90%A6%E5%B7%B2%E8%A2%AB%E5%8A%AB%E6%8C%81"><span class="nav-number">3.4.</span> <span class="nav-text">识别是否已被劫持</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Skiy"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Skiy</p>
+  <div class="site-description" itemprop="description">日常代码记录 💜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/skiyee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;skiyee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/1139093298" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;1139093298" rel="noopener" target="_blank"><i class="fab fa-bilibili fa-fw"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Skiy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/clicklove.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
