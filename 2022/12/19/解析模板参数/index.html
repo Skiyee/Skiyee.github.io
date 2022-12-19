@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"skiyee.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="总结：这一章相对比较简单，主要功能就是解析出模板再把其传给编译方法  v1.0 模板引擎：性能差，需要正则匹配替换  v2.0 虚拟DOM：数据变换后比较虚拟DOM差异，实现更新  虚拟DOM核心：将模板变成JS语法，再生成虚拟DOM">
+  <meta name="description" content="总结：这一章相对比较简单，主要功能就是解析出模板再把其传给编译方法  v1.0 模板引擎：性能差，需要正则匹配替换  v2.0 虚拟DOM：数据变换后比较虚拟DOM差异，实现更新  虚拟DOM核心：将模板变成ast语法树，再生成虚拟DOM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="解析模板参数">
 <meta property="og:url" content="https://skiyee.github.io/2022/12/19/%E8%A7%A3%E6%9E%90%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0/index.html">
 <meta property="og:site_name" content="Skiy&#39;s Blog">
-<meta property="og:description" content="总结：这一章相对比较简单，主要功能就是解析出模板再把其传给编译方法  v1.0 模板引擎：性能差，需要正则匹配替换  v2.0 虚拟DOM：数据变换后比较虚拟DOM差异，实现更新  虚拟DOM核心：将模板变成JS语法，再生成虚拟DOM">
+<meta property="og:description" content="总结：这一章相对比较简单，主要功能就是解析出模板再把其传给编译方法  v1.0 模板引擎：性能差，需要正则匹配替换  v2.0 虚拟DOM：数据变换后比较虚拟DOM差异，实现更新  虚拟DOM核心：将模板变成ast语法树，再生成虚拟DOM">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-19T06:30:55.000Z">
-<meta property="article:modified_time" content="2022-12-19T07:34:04.697Z">
+<meta property="article:modified_time" content="2022-12-19T13:38:57.601Z">
 <meta property="article:author" content="Skiy">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-19 14:30:55 / 修改时间：15:34:04" itemprop="dateCreated datePublished" datetime="2022-12-19T14:30:55+08:00">2022-12-19</time>
+              <time title="创建时间：2022-12-19 14:30:55 / 修改时间：21:38:57" itemprop="dateCreated datePublished" datetime="2022-12-19T14:30:55+08:00">2022-12-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,7 +243,7 @@
 </li>
 <li><p>v2.0 虚拟DOM：数据变换后比较虚拟DOM差异，实现更新</p>
 </li>
-<li><p>虚拟DOM核心：将模板变成JS语法，再生成虚拟DOM</p>
+<li><p>虚拟DOM核心：将模板变成ast语法树，再生成虚拟DOM</p>
 </li>
 </ul>
 <span id="more"></span>
@@ -251,7 +251,7 @@
 <h2 id="template模板转换成render函数"><a href="#template模板转换成render函数" class="headerlink" title="template模板转换成render函数"></a>template模板转换成render函数</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/src/i</span>nit.js</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">import compilerToFunction from <span class="string">&quot;./compiler/index&quot;</span>;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Vue.prototype._init = <span class="keyword">function</span>(options)&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="regexp">//</span> 若有指定el，那么就挂载它</span><br><span class="line">  <span class="keyword">if</span>(options.el)&#123;</span><br><span class="line">    vm.<span class="variable">$mount</span>(options.el);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> 解析出模板并编译成render函数</span><br><span class="line">Vue.prototype.<span class="variable">$mount</span> = <span class="keyword">function</span>(el)&#123;</span><br><span class="line">  const vm = this;</span><br><span class="line">  el = document.querySelector(el);</span><br><span class="line">  let ops = vm.<span class="variable">$options</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="regexp">//</span> 不存在render函数，那么就先解析出模板（有两种模板：<span class="number">1</span>、作为“属性”的模板，<span class="number">2</span>、作为“标签”的模板）再编译成render函数</span><br><span class="line">  <span class="keyword">if</span>(!ops.render)&#123;</span><br><span class="line">    <span class="regexp">//</span> 定义一个空模板</span><br><span class="line">    let template;</span><br><span class="line">    </span><br><span class="line">    <span class="regexp">//</span> 判断实例是否存在 模板属性</span><br><span class="line">    <span class="keyword">if</span> (ops.template) &#123;</span><br><span class="line">      <span class="regexp">//</span> 存在 模板属性 并往空模板填写</span><br><span class="line">      template = ops.template;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (el) &#123;</span><br><span class="line">      <span class="regexp">//</span> 不存在模板但存在el值，解析出 标签模板 并赋值</span><br><span class="line">      template = el.outerHTML;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="regexp">//</span> 严谨判断template是否写入</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="regexp">//</span> 对模板进行编译，使其变成render函数</span><br><span class="line">      const render = compileToFunction(template);</span><br><span class="line">      ops.render = render;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="regexp">//</span> 存在render函数直接赋值</span><br><span class="line">  ops.render = render;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="生成模板解析器的方法"><a href="#生成模板解析器的方法" class="headerlink" title="生成模板解析器的方法"></a>生成模板解析器的方法</h2><p>生成一个新文件，src -&gt; compiler -&gt; index.js</p>
-<p>功能：将template转换成成art语法树 -&gt; 根据语法树生成render方法</p>
+<p>功能：将template转换成ast语法树 -&gt; 根据语法树生成render方法</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">export</span> function <span class="title">compilerToFunction</span><span class="params">(<span class="keyword">template</span>)</span></span>&#123;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="安装一个路径自动补全插件"><a href="#安装一个路径自动补全插件" class="headerlink" title="安装一个路径自动补全插件"></a>安装一个路径自动补全插件</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 主目录文件下</span><br><span class="line"></span><br><span class="line">npm install @rollup/plugin-<span class="keyword">node</span><span class="title">-resolve</span></span><br></pre></td></tr></table></figure>
@@ -278,7 +278,10 @@
     <a href="/2022/12/18/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" rel="prev" title="响应式原理">
       <i class="fa fa-chevron-left"></i> 响应式原理
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/12/19/%E6%A8%A1%E6%9D%BF%E8%BD%AC%E6%8D%A2%E6%88%90ast%E8%AF%AD%E6%B3%95%E6%A0%91/" rel="next" title="模板转换成ast语法树">
+      模板转换成ast语法树 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -352,7 +355,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
