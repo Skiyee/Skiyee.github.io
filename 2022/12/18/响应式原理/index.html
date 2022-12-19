@@ -28,7 +28,7 @@
 <meta property="og:description" content="目标：基于defineProperty，对 data 数据进行劫持，实现响应式 关键学习点：指针，闭包，递归，this指向（这应该包括在指针里吧） 技巧：…arg(作为参数) &#x3D;&gt; []，会转换成数组; newObj &#x3D; Object.create(obj)，obj作为“新创对象(newObj)”的原型">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-18T01:53:46.000Z">
-<meta property="article:modified_time" content="2022-12-18T08:50:20.859Z">
+<meta property="article:modified_time" content="2022-12-18T08:55:11.187Z">
 <meta property="article:author" content="Skiy">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-18 09:53:46 / 修改时间：16:50:20" itemprop="dateCreated datePublished" datetime="2022-12-18T09:53:46+08:00">2022-12-18</time>
+              <time title="创建时间：2022-12-18 09:53:46 / 修改时间：16:55:11" itemprop="dateCreated datePublished" datetime="2022-12-18T09:53:46+08:00">2022-12-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -271,7 +271,7 @@
 </blockquote>
 <h1 id="数组劫持"><a href="#数组劫持" class="headerlink" title="数组劫持"></a>数组劫持</h1><p>若不作数组劫持，它会把所有的数组的key都作劫持，这是不合理的，若有1000个值，会劫持1000次，浪费性能</p>
 <p>而且数组大部分操作都是使用方法来增删改查，变异方法共有七个（修改原数组本身）</p>
-<h2 id="劫持数组"><a href="#劫持数组" class="headerlink" title="劫持数组"></a>劫持数组</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; newArrayProto &#125; form <span class="string">&#x27;observe/array.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Observer</span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="comment">// 判断是否为数组</span></span><br><span class="line">    <span class="keyword">if</span>(Array.isArray(<span class="keyword">data</span>))&#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 保留原数组特性，重写部分方法</span></span><br><span class="line">      <span class="keyword">data</span>.__proto__ = newArrayProto</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 重写数组方法</span></span><br><span class="line">      <span class="keyword">this</span>.observeArray(<span class="keyword">data</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.walk(<span class="keyword">data</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 参数：data属性里的数组</span></span><br><span class="line"><span class="comment">  * 功能：对数组里的值进行劫持，数组里的对象都会被劫持</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  observeArray(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="keyword">data</span>.forEach(item=&gt;observe(item)); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="劫持数组"><a href="#劫持数组" class="headerlink" title="劫持数组"></a>劫持数组</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">src/observe/index.js</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; newArrayProto &#125; form <span class="string">&#x27;observe/array.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Observer</span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="comment">// 判断是否为数组</span></span><br><span class="line">    <span class="keyword">if</span>(Array.isArray(<span class="keyword">data</span>))&#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 保留原数组特性，重写部分方法</span></span><br><span class="line">      <span class="keyword">data</span>.__proto__ = newArrayProto;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 重写数组方法</span></span><br><span class="line">      <span class="keyword">this</span>.observeArray(<span class="keyword">data</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.walk(<span class="keyword">data</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 参数：data属性里的数组</span></span><br><span class="line"><span class="comment">  * 功能：对数组里的值进行劫持，数组里的对象都会被劫持</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  observeArray(<span class="keyword">data</span>)&#123;</span><br><span class="line">    <span class="keyword">data</span>.forEach(item=&gt;observe(item)); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="重写变异方法"><a href="#重写变异方法" class="headerlink" title="重写变异方法"></a>重写变异方法</h2><p>创建 observe -&gt; array.js</p>
 <p>目的：让数组函数的原型继承给newArrayProto对象的原型</p>
@@ -303,7 +303,10 @@
     <a href="/2022/12/17/%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE/" rel="prev" title="初始化数据">
       <i class="fa fa-chevron-left"></i> 初始化数据
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/12/19/%E8%A7%A3%E6%9E%90%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0/" rel="next" title="解析模板参数">
+      解析模板参数 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -377,7 +380,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
