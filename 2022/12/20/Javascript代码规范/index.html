@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"skiyee.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="总结：模板引擎原理with + newFunction，这章都是为render执行作准备，没什么难点 学习点：with方法(延长作用域) Vue2核心流程：创造响应式数据 -&gt; 模板转换成ast语法树 -&gt; 根据ast语法树生成render函数 -&gt; 数据更新执行render函数 render函数会生成虚拟DOM，再根据虚拟DOM生成真实DOM">
+  <meta name="description" content="大部分是初始编程习惯和模仿并学习得来的，仅适个人，抓取你需要的就行">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为render函数执行作准备">
-<meta property="og:url" content="https://skiyee.github.io/2022/12/20/%E4%B8%BArender%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E4%BD%9C%E5%87%86%E5%A4%87/index.html">
+<meta property="og:title" content="Javascript代码规范">
+<meta property="og:url" content="https://skiyee.github.io/2022/12/20/Javascript%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/index.html">
 <meta property="og:site_name" content="Skiy&#39;s Blog">
-<meta property="og:description" content="总结：模板引擎原理with + newFunction，这章都是为render执行作准备，没什么难点 学习点：with方法(延长作用域) Vue2核心流程：创造响应式数据 -&gt; 模板转换成ast语法树 -&gt; 根据ast语法树生成render函数 -&gt; 数据更新执行render函数 render函数会生成虚拟DOM，再根据虚拟DOM生成真实DOM">
+<meta property="og:description" content="大部分是初始编程习惯和模仿并学习得来的，仅适个人，抓取你需要的就行">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-12-20T09:03:54.000Z">
-<meta property="article:modified_time" content="2022-12-20T09:40:06.068Z">
+<meta property="article:published_time" content="2022-12-20T09:50:00.000Z">
+<meta property="article:modified_time" content="2022-12-20T14:04:35.646Z">
 <meta property="article:author" content="Skiy">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://skiyee.github.io/2022/12/20/%E4%B8%BArender%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E4%BD%9C%E5%87%86%E5%A4%87/">
+<link rel="canonical" href="https://skiyee.github.io/2022/12/20/Javascript%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>为render函数执行作准备 | Skiy's Blog</title>
+  <title>Javascript代码规范 | Skiy's Blog</title>
   
 
 
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://skiyee.github.io/2022/12/20/%E4%B8%BArender%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E4%BD%9C%E5%87%86%E5%A4%87/">
+    <link itemprop="mainEntityOfPage" href="https://skiyee.github.io/2022/12/20/Javascript%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为render函数执行作准备
+          Javascript代码规范
         </h1>
 
         <div class="post-meta">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-20 17:03:54 / 修改时间：17:40:06" itemprop="dateCreated datePublished" datetime="2022-12-20T17:03:54+08:00">2022-12-20</time>
+              <time title="创建时间：2022-12-20 17:50:00 / 修改时间：22:04:35" itemprop="dateCreated datePublished" datetime="2022-12-20T17:50:00+08:00">2022-12-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Vue2%E6%BA%90%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">Vue2源码</span></a>
+                  <a href="/categories/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" itemprop="url" rel="index"><span itemprop="name">代码规范</span></a>
                 </span>
             </span>
 
@@ -237,44 +237,131 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>总结：模板引擎原理with + newFunction，这章都是为render执行作准备，没什么难点</p>
-<p>学习点：with方法(延长作用域)</p>
-<p>Vue2核心流程：创造响应式数据 -&gt; 模板转换成ast语法树 -&gt; 根据ast语法树生成render函数 -&gt; 数据更新执行render函数</p>
-<p>render函数会生成虚拟DOM，再根据虚拟DOM生成真实DOM</p>
+        <p>大部分是初始编程习惯和模仿并学习得来的，仅适个人，抓取你需要的就行</p>
 <span id="more"></span>
 
-<h2 id="生成render函数"><a href="#生成render函数" class="headerlink" title="生成render函数"></a>生成render函数</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">src/compiler/index.<span class="property">js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">compileToFunction</span>(<span class="params">template</span>) &#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// with的功能是：参数作为该函数的this(作用域)，比如参数为：obj = &#123;a:1&#125;,with(obj)&#123;console.log(a)&#125;, 输出 1</span></span><br><span class="line">  <span class="comment">// 根据代码生成render函数</span></span><br><span class="line">  code = <span class="string">`with(this)&#123;return <span class="subst">$&#123;code&#125;</span>&#125;`</span>;</span><br><span class="line">  <span class="keyword">let</span> render = <span class="keyword">new</span> <span class="title class_">Function</span>(code);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> render;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="组件挂载"><a href="#组件挂载" class="headerlink" title="组件挂载"></a>组件挂载</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">src/init.js</span><br><span class="line"></span><br><span class="line">import &#123; mountComponent &#125; from <span class="string">&quot;src/lifecycle.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> 解析出模板并编译成render函数</span><br><span class="line">Vue.prototype.<span class="variable">$mount</span> = <span class="keyword">function</span>(el)&#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="regexp">//</span> 存在render函数直接赋值</span><br><span class="line">  <span class="regexp">//</span> ops.render = render;</span><br><span class="line"></span><br><span class="line">  <span class="regexp">//</span> 组件挂载</span><br><span class="line">  mountComponent(vm,el)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="拓展方法"><a href="#拓展方法" class="headerlink" title="拓展方法"></a>拓展方法</h2><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src/index.js</span><br><span class="line"></span><br><span class="line">import &#123; indexLifeCycle &#125; from <span class="string">&quot;./lifecycle&quot;</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">initLifeCycle(Vue)<span class="comment">;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<p>  src&#x2F;lifecycle.js</p>
-<p>  export function initLifeCycle(Vue){</p>
-<pre><code>Vue.prototype._updata() = function()&#123;
-
-&#125;
-
-Vue.prototype._render() = function()&#123;
-
-&#125;
-</code></pre>
-<p>  }</p>
-<p>  &#x2F;&#x2F; 功能：实现组件挂载<br>  export function mountComponet(vm,el){</p>
-<pre><code>// 1. 调用render方法产生虚拟DOM
-// vm._render() =&gt; vm.$options.render();
-
-vm._updata(vm._render());
-
-
-// 2. 根据虚拟DOM生成真实DOM
-
-// 3. 插入到el属性中
-</code></pre>
-<p>  }</p>
-<pre><code>
-</code></pre>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>命名方式：单驼峰</p>
+<p>命名规范：前缀名词</p>
+<p>例：</p>
+<p><code>maxCount</code></p>
+<h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><p>命名方式：全大写</p>
+<p>命名规范：长文本可以采用下划线方式</p>
+<p>例：</p>
+<p><code>SUCCESS_STATE</code></p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>命名方式：小驼峰</p>
+<p>命名规范：前缀动词</p>
+<p>例：</p>
+<p><code>getUserInfo</code></p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>命名方式：大驼峰</p>
+<p>命名规范：前缀名词</p>
+<p>例：</p>
+<p><code>UserLogin</code></p>
+<h2 id="函数常见动词"><a href="#函数常见动词" class="headerlink" title="函数常见动词"></a>函数常见动词</h2><h3 id="创建销毁"><a href="#创建销毁" class="headerlink" title="创建销毁"></a>创建销毁</h3><ul>
+<li><p>create</p>
+</li>
+<li><p>init</p>
+</li>
+<li><p>load</p>
+</li>
+<li><p>destroy</p>
+</li>
+</ul>
+<h3 id="获取设置"><a href="#获取设置" class="headerlink" title="获取设置"></a>获取设置</h3><ul>
+<li><p>get</p>
+</li>
+<li><p>fetch</p>
+</li>
+<li><p>calc</p>
+</li>
+<li><p>read</p>
+</li>
+<li><p>query</p>
+</li>
+<li><p>find</p>
+</li>
+<li><p>receive</p>
+</li>
+<li><p>set</p>
+</li>
+<li><p>pull</p>
+</li>
+<li><p>write</p>
+</li>
+<li><p>put</p>
+</li>
+<li><p>push</p>
+</li>
+</ul>
+<blockquote>
+<p>get 和 fetch 是不一样的，获取和抓取，获取是一定拿得到的，抓取却是不一定的，fetch一般在网络请求中使用</p>
+</blockquote>
+<blockquote>
+<p>pull：拉，push：推，pull：拉取”分支”，push：推送”通知信息”，put：放入”数据”</p>
+</blockquote>
+<h3 id="更新重置"><a href="#更新重置" class="headerlink" title="更新重置"></a>更新重置</h3><ul>
+<li><p>update</p>
+</li>
+<li><p>reset</p>
+</li>
+<li><p>refresh</p>
+</li>
+</ul>
+<h3 id="添加删除"><a href="#添加删除" class="headerlink" title="添加删除"></a>添加删除</h3><ul>
+<li><p>add</p>
+</li>
+<li><p>append</p>
+</li>
+<li><p>insert</p>
+</li>
+<li><p>delete</p>
+</li>
+<li><p>remove</p>
+</li>
+</ul>
+<blockquote>
+<p>我认为在中文delete语义比remove更强一点，移除桌子和删除桌子的区别</p>
+</blockquote>
+<h3 id="启动停止"><a href="#启动停止" class="headerlink" title="启动停止"></a>启动停止</h3><ul>
+<li><p>open</p>
+</li>
+<li><p>start</p>
+</li>
+<li><p>launch</p>
+</li>
+<li><p>finish</p>
+</li>
+<li><p>pause</p>
+</li>
+<li><p>close</p>
+</li>
+<li><p>stop</p>
+</li>
+</ul>
+<h3 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h3><ul>
+<li><p>filter</p>
+</li>
+<li><p>merge</p>
+</li>
+<li><p>concat</p>
+</li>
+<li><p>split</p>
+</li>
+<li><p>deoverlap</p>
+<ul>
+<li>去重</li>
+</ul>
+</li>
+<li><p>reverse</p>
+</li>
+<li><p>sort</p>
+</li>
+<li><p>fill</p>
+</li>
+<li><p>parse</p>
+</li>
+<li><p>format</p>
+</li>
+</ul>
 
     </div>
 
@@ -293,13 +380,10 @@ vm._updata(vm._render());
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/12/20/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" rel="prev" title="代码生成实现原理">
-      <i class="fa fa-chevron-left"></i> 代码生成实现原理
+    <a href="/2022/12/20/%E4%B8%BArender%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E4%BD%9C%E5%87%86%E5%A4%87/" rel="prev" title="为render函数执行作准备">
+      <i class="fa fa-chevron-left"></i> 为render函数执行作准备
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/12/20/Javascript%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" rel="next" title="Javascript代码规范">
-      Javascript代码规范 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -358,7 +442,7 @@ vm._updata(vm._render());
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90render%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">生成render函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E6%8C%82%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">组件挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E5%B1%95%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">拓展方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">常量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">4.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%B8%B8%E8%A7%81%E5%8A%A8%E8%AF%8D"><span class="nav-number">5.</span> <span class="nav-text">函数常见动词</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%94%80%E6%AF%81"><span class="nav-number">5.1.</span> <span class="nav-text">创建销毁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.2.</span> <span class="nav-text">获取设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%87%8D%E7%BD%AE"><span class="nav-number">5.3.</span> <span class="nav-text">更新重置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4"><span class="nav-number">5.4.</span> <span class="nav-text">添加删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%81%9C%E6%AD%A2"><span class="nav-number">5.5.</span> <span class="nav-text">启动停止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="nav-number">5.6.</span> <span class="nav-text">数据处理</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
