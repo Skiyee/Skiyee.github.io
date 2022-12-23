@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari_pinned_tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"skiyee.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="以后只会写一些核心部分的总结,我会把总结的结论, 再结合代码展示出来, 如果根据新增代码写文章就显得过流程了:&gt; 总结:  _render() &#x3D;&gt; 执行render函数 &#x3D;&gt; 生成虚拟DOM _updatap() &#x3D;&gt; 取出挂载在vm上的$el &#x3D;&gt; 传入patch() &#x3D;&gt; 获取真实DOM(包含diff算法和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟DOM转换成真实DOM">
+<meta property="og:url" content="https://skiyee.github.io/2022/12/23/%E8%99%9A%E6%8B%9FDOM%E8%BD%AC%E6%8D%A2%E6%88%90%E7%9C%9F%E5%AE%9EDOM/index.html">
+<meta property="og:site_name" content="Skiy&#39;s Blog">
+<meta property="og:description" content="以后只会写一些核心部分的总结,我会把总结的结论, 再结合代码展示出来, 如果根据新增代码写文章就显得过流程了:&gt; 总结:  _render() &#x3D;&gt; 执行render函数 &#x3D;&gt; 生成虚拟DOM _updatap() &#x3D;&gt; 取出挂载在vm上的$el &#x3D;&gt; 传入patch() &#x3D;&gt; 获取真实DOM(包含diff算法和">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-23T04:02:22.000Z">
+<meta property="article:modified_time" content="2022-12-23T09:42:55.707Z">
+<meta property="article:author" content="Skiy">
+<meta property="article:tag" content="Javascript">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://skiyee.github.io/2022/12/23/%E8%99%9A%E6%8B%9FDOM%E8%BD%AC%E6%8D%A2%E6%88%90%E7%9C%9F%E5%AE%9EDOM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>虚拟DOM转换成真实DOM | Skiy's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Skiy's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Code Always Going</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://skiyee.github.io/2022/12/23/%E8%99%9A%E6%8B%9FDOM%E8%BD%AC%E6%8D%A2%E6%88%90%E7%9C%9F%E5%AE%9EDOM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Skiy">
+      <meta itemprop="description" content="日常代码记录 💜">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Skiy's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          虚拟DOM转换成真实DOM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-12-23 12:02:22 / 修改时间：17:42:55" itemprop="dateCreated datePublished" datetime="2022-12-23T12:02:22+08:00">2022-12-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vue2%E6%BA%90%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">Vue2源码</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>以后只会写一些核心部分的总结,我会把总结的结论, 再结合代码展示出来, 如果根据新增代码写文章就显得过流程了:&gt;</p>
+<p>总结: </p>
+<p>_render() &#x3D;&gt; 执行render函数 &#x3D;&gt; 生成虚拟DOM</p>
+<p>_updatap() &#x3D;&gt; 取出挂载在vm上的$el &#x3D;&gt; 传入patch() &#x3D;&gt; 获取真实DOM(包含diff算法和生成真实DOM) &#x3D;&gt; 新DOM挂载到$el上(代替掉旧DOM)</p>
+<p>patch() &#x3D;&gt; 处理虚拟DOM &#x3D;&gt; createElm() &#x3D;&gt; 生成真实DOM &#x3D;&gt; replace旧DOM(插入到旧DOM的下方并删除掉旧节点)</p>
+<span id="more"></span>
+
+<h2 id="根据ast树生成的render函数"><a href="#根据ast树生成的render函数" class="headerlink" title="根据ast树生成的render函数"></a>根据ast树生成的render函数</h2><p>这段只是为了提示render函数的结构</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">_c</span>(<span class="string">&quot;根标签&quot;</span>,&#123;<span class="string">&quot;根标签属性&quot;</span>&#125;,</span><br><span class="line">  <span class="variable">_c</span>(<span class="string">&quot;子标签&quot;</span>,&#123;<span class="string">&quot;子属性&quot;</span>&#125;,</span><br><span class="line">    <span class="variable">_v</span>(<span class="variable">_s</span>(变量文本)+<span class="string">&quot;纯文本&quot;</span>)),</span><br><span class="line">  )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="执行render函数生成虚拟DOM"><a href="#执行render函数生成虚拟DOM" class="headerlink" title="执行render函数生成虚拟DOM"></a>执行render函数生成虚拟DOM</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">src/lifecycle.<span class="property">js</span></span><br><span class="line">  <span class="keyword">import</span> &#123; createElementVNode, createTextVNode &#125; <span class="keyword">from</span> <span class="string">&#x27;./vdom/index.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">initLifeCycle</span>(<span class="params">Vue</span>) &#123;</span><br><span class="line">    <span class="comment">/* ============ 处理render函数, 生成虚拟DOM ============ */</span></span><br><span class="line">    <span class="comment">// 格式：_c(标签, 属性, 孩子节点)</span></span><br><span class="line">    <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_c</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">createElementVNode</span>(<span class="variable language_">this</span>, ...<span class="variable language_">arguments</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 格式：_v(文本类型)</span></span><br><span class="line">    <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_v</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">createTextVNode</span>(<span class="variable language_">this</span>, ...<span class="variable language_">arguments</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 格式：_s(文本变量)</span></span><br><span class="line">    <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_s</span> = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">typeof</span> value !== <span class="string">&#x27;Object&#x27;</span> ? value : <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(value);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 执行render函数, 生成虚拟DOM</span></span><br><span class="line">    <span class="title class_">Vue</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">_render</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// 改变with的this指向，若不call，this是$options</span></span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">$options</span>.<span class="property">render</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="节点的处理-配合上面代码使用"><a href="#节点的处理-配合上面代码使用" class="headerlink" title="节点的处理, 配合上面代码使用"></a>节点的处理, 配合上面代码使用</h2><p>主要功能: 根据render函数生成节点再返回一个虚拟节点</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">src/vdom/index.js</span><br><span class="line">  <span class="comment">//h() _c() =&gt; 创建元素节点</span></span><br><span class="line">  export <span class="keyword">function</span> <span class="title function_">createElementVNode</span><span class="params">(vm, tag, data = &#123;&#125;, <span class="rest_arg">...children</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (data == <span class="literal">null</span>) &#123;</span><br><span class="line">      data = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    let key = data.key;</span><br><span class="line">    <span class="keyword">if</span> (key) <span class="keyword">delete</span> data.key;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> vnode(vm, tag, key, data, children);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// _v() =&gt; 创建文本节点</span></span><br><span class="line">  export <span class="keyword">function</span> <span class="title function_">createTextVNode</span><span class="params">(vm, text)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> vnode(vm, <span class="keyword">void</span> <span class="number">0</span>, <span class="keyword">void</span> <span class="number">0</span>, <span class="keyword">void</span> <span class="number">0</span>, <span class="keyword">void</span> <span class="number">0</span>, text);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ast: 做的是语法层面的转换，转换的是已存在本身（包括css、js、html）</span></span><br><span class="line">  <span class="comment">// 虚拟DOM：可以转换自定义的属性(只描述dom)</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">vnode</span><span class="params">(vm, tag, key, data, children, text)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      vm,</span><br><span class="line">      tag,</span><br><span class="line">      key,</span><br><span class="line">      data,</span><br><span class="line">      children,</span><br><span class="line">      text,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="执行render生成虚拟DOM转换成真实DOM"><a href="#执行render生成虚拟DOM转换成真实DOM" class="headerlink" title="执行render生成虚拟DOM转换成真实DOM"></a>执行render生成虚拟DOM转换成真实DOM</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">src/lifecycle.js</span><br><span class="line">  export <span class="keyword">function</span> initLifeCycle(Vue) &#123;</span><br><span class="line">	<span class="regexp">/* ============ 虚拟节点生成或更新真实DOM ============ */</span></span><br><span class="line">    Vue.prototype._updata = <span class="keyword">function</span> (vnode) &#123;</span><br><span class="line">      const vm = this;</span><br><span class="line">      const el = vm.<span class="variable">$el</span>;</span><br><span class="line"></span><br><span class="line">      <span class="regexp">//</span> 挂载到<span class="variable">$el</span>, 生成或更新 真实dom</span><br><span class="line">      vm.<span class="variable">$el</span> = patch(el, vnode);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="regexp">/* ============ 处理render函数, 生成虚拟DOM ============ */</span></span><br><span class="line">    <span class="regexp">//</span> code more...</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建真实DOM的函数"><a href="#创建真实DOM的函数" class="headerlink" title="创建真实DOM的函数"></a>创建真实DOM的函数</h2><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">src/lifecycle.js</span><br><span class="line"><span class="comment">// 创建真实DOM</span></span><br><span class="line"><span class="keyword">function</span> create<span class="constructor">Elm(<span class="params">vnode</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">let</span> &#123; tag, data, children, text &#125; = vnode;</span><br><span class="line">	<span class="comment">// 是标签</span></span><br><span class="line">	<span class="keyword">if</span> (typeof tag<span class="operator"> === </span>&#x27;<span class="built_in">string</span>&#x27;) &#123;</span><br><span class="line">		<span class="comment">// 挂载虚拟节点到真实节点上</span></span><br><span class="line">		vnode.el = document.create<span class="constructor">Element(<span class="params">tag</span>)</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//  赋属性</span></span><br><span class="line">		patch<span class="constructor">Props(<span class="params">vnode</span>.<span class="params">el</span>, <span class="params">data</span>)</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 递归处理子节点</span></span><br><span class="line">		children.<span class="keyword">for</span><span class="constructor">Each((<span class="params">child</span>)</span> =&gt; &#123;</span><br><span class="line">			vnode.el.append<span class="constructor">Child(<span class="params">createElm</span>(<span class="params">child</span>)</span>);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		vnode.el = document.create<span class="constructor">TextNode(<span class="params">text</span>)</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	return vnode.el;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 功能: 属性的初始化或更新</span></span><br><span class="line"><span class="keyword">function</span> patch<span class="constructor">Props(<span class="params">el</span>, <span class="params">props</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> props) &#123;</span><br><span class="line">		<span class="keyword">if</span> (key<span class="operator"> === </span>&#x27;style&#x27;) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">let</span> styleName <span class="keyword">in</span> props.style) &#123;</span><br><span class="line">				el.style<span class="literal">[<span class="identifier">styleName</span>]</span> = props.style<span class="literal">[<span class="identifier">styleName</span>]</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			el.set<span class="constructor">Attribute(<span class="params">key</span>, <span class="params">props</span>[<span class="params">key</span>])</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/20/Javascript%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" rel="prev" title="Javascript代码规范">
+      <i class="fa fa-chevron-left"></i> Javascript代码规范
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEast%E6%A0%91%E7%94%9F%E6%88%90%E7%9A%84render%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">根据ast树生成的render函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8Crender%E5%87%BD%E6%95%B0%E7%94%9F%E6%88%90%E8%99%9A%E6%8B%9FDOM"><span class="nav-number">2.</span> <span class="nav-text">执行render函数生成虚拟DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%A4%84%E7%90%86-%E9%85%8D%E5%90%88%E4%B8%8A%E9%9D%A2%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">节点的处理, 配合上面代码使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8Crender%E7%94%9F%E6%88%90%E8%99%9A%E6%8B%9FDOM%E8%BD%AC%E6%8D%A2%E6%88%90%E7%9C%9F%E5%AE%9EDOM"><span class="nav-number">4.</span> <span class="nav-text">执行render生成虚拟DOM转换成真实DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%9C%9F%E5%AE%9EDOM%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">创建真实DOM的函数</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Skiy"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Skiy</p>
+  <div class="site-description" itemprop="description">日常代码记录 💜</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/skiyee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;skiyee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/1139093298" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;1139093298" rel="noopener" target="_blank"><i class="fab fa-bilibili fa-fw"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Skiy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/clicklove.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
