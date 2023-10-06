@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目里的ESLINT+PRETTIER配置 | Skiyee&#39;s Blog</title>
+<noscript>开启Javascript是必要的</noscript>
+<link rel="icon" type="image/x-icon" href="/style/svg/favicon.svg">
+<link rel="apple-touch-icon" href="/style/svg/favicon.svg">
+<meta name="apple-mobile-web-app-title" content="Skiyee&#39;s Blog">
+<link rel="bookmark" href="/style/svg/favicon.svg">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/style/svg/favicon.svg">
+<meta name="description" content="分享生活、编程、UI和三维">
+<meta name="theme-color" content="#1C1C1F">
+<link rel="stylesheet" href="/css/var.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/custom.css">
+
+
+    <script data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}" src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/pace/1.2.4/pace.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+<link rel="stylesheet" href="/lib/snackbar.min.css">
+
+
+<script src="/lib/qrcode.min.js"></script>
+
+
+
+
+
+<script>var GLOBALCONFIG = {"root":"/","runtime":"2023-06-16 00:00:00","lazyload":{"enable":false,"error":"/style/img/avatar.jpg"},"hightlight":{"enable":true,"limit":200},"lightbox":true,"randomlinks":false,"lang":{"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"recent":"最近","yesterday":"昨天","berforeyesterday":"前天","daybefore":"天前","runtime":"天"},"sayhello":{"morning":"😁早上好","noon":"😆中午好","afternoon":"😄下午好","night":"🥱晚上好","goodnight":"😴晚安","iam":"!  我是"},"search":{"empty":"搜索结果为空","hit":"已为您找到 ${query} 条结果","placeholder":"输入关键词快速查找"}},"covercolor":true,"comment":{"enable":false,"twikooUrl":null}};</script><script id="site-config">var PAGECONFIG = {"is_home":false,"is_post":true,"is_page":false,"page":false,"toc":true,"comment":false};</script>
+    <meta name="generator" content="Hexo 6.3.0"></head>
+    <body id="body">
+        
+            <div id="loading-box" onclick="preloader.endLoading();" class style="zoom: 1;">
+    <div class="loading-bg">
+        <img class="loading-img nolazyload" alt="loading image"
+            src="/style/img/avatar.jpg">
+        </div>
+</div>
+<script>
+    const preloader = {
+        endLoading: () => {
+            document.getElementById('loading-box').classList.add("loaded")
+        },
+        initLoading: () => {
+            document.getElementById('loading-box').classList.remove("loaded")
+        },
+        removePaceDone: () => {
+            document.getElementById('body').classList = 'pace-done'
+        }
+    }
+    window.addEventListener('load',()=> { preloader.endLoading() })
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+</script>
+<style>
+    #loading-box {
+        -webkit-user-select: none;
+    }
+
+    #loading-box .loading-bg {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: var(--heo-background);
+        z-index: 1999;
+        opacity: 1;
+        transition: 0.2s;
+        pointer-events: all;
+        animation: showLoading 0.3s 0s backwards;
+    }
+
+    #loading-box.loaded .loading-bg {
+        pointer-events: none;
+        transition: 0.2s;
+        animation: hideLoading 0.3s 0s forwards;
+    }
+
+    #loading-box .loading-img {
+        width: 100px;
+        margin: auto;
+        animation-duration: 0.2s;
+        animation-name: loadingAction;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+    @keyframes loadingAction {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0.6;
+        }
+    }
+
+    @keyframes hideLoading {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes showLoading {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+        
+        <div id="console" style="zoom: 1;" class="">
+    <div class="close-btn" onclick="acrylic.hideConsole()" href="javascript:void(0);">
+        <i class="fas fa-circle-xmark"></i>
+    </div>
+    
+        <div class="console-card-group">
+            <div class="console-card-group-left">
+                <div class="console-card" id="card-newest-comments" onclick="acrylic.hideConsole()">
+                    <div class="card-content">
+                        <div class="author-content-item-tips">互动</div>
+                        <div class="author-content-item-title">最新评论</div>
+                    </div>
+                    <div class="aside-list"></div>
+                </div>
+    
+            </div>
+            <div class="console-card-group-right">
+                <div class="console-card tags" onclick="acrylic.hideConsole()">
+                    <div class="card-content">
+                        <div class="author-content-item-tips">标签</div>
+                        <div class="author-content-item-title">寻找感兴趣的领域</div>
+                    </div>
+                    <div class="card-tag-cloud">
+                        
+                            <a href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">业务端<sup>1</sup></a>
+                        
+                            <a href="/tags/ADMIN%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">ADMIN端<sup>1</sup></a>
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 0.8rem; color: #d3d3d3">代码<sup>1</sup></a>
+                        
+                            <a href="/tags/CHATGPT/" style="font-size: 0.8rem; color: #d3d3d3">CHATGPT<sup>1</sup></a>
+                        
+                            <a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 0.8rem; color: #d3d3d3">杂谈<sup>1</sup></a>
+                        
+                            <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 0.8rem; color: #d3d3d3">闲聊<sup>1</sup></a>
+                        
+                            <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 0.8rem; color: #d3d3d3">经验<sup>1</sup></a>
+                        
+                            <a href="/tags/ESLint/" style="font-size: 0.8rem; color: #d3d3d3">ESLint<sup>1</sup></a>
+                        
+                            <a href="/tags/Prettier/" style="font-size: 0.8rem; color: #d3d3d3">Prettier<sup>1</sup></a>
+                        
+                            <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" style="font-size: 0.8rem; color: #d3d3d3">配置指南<sup>1</sup></a>
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" style="font-size: 0.8rem; color: #d3d3d3">代码规范<sup>1</sup></a>
+                        
+                    </div>
+                </div>
+                <div class="console-card history" onclick="acrylic.hideConsole()">
+                    <ul class="card-archive-list">
+    
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-10/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-10</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-08/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-08</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-07/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-07</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-06/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-06</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+        
+</ul>
+
+                </div>
+            </div>
+        </div>
+    
+    
+    <div class="button-group">
+        <div class="console-btn-item"> <a class="darkmode_switchbutton" onclick="acrylic.switchDarkMode()" title="显示模式切换"
+                href="javascript:void(0);" rel="external nofollow" data-pjax-state=""><i class="fas fa-moon"
+                    style="font-size: 1rem;"></i></a></div>
+        
+    </div>
+    <div class="console-mask" onclick="acrylic.hideConsole()" href="javascript:void(0);" rel="external nofollow"></div>
+</div>
+        <div id="sidebar" style="zoom: 1;">
+    <div id="menu-mask" style="display: none;"></div>
+    <div id="sidebar-menus" class>
+        <span class="sidebar-menu-item-title">功能</span>
+        <div class="sidebar-menu-item">
+            <a class="darkmode_switchbutton menu-child" onclick="acrylic.switchDarkMode()" title="显示模式切换"
+                href="javascript:void(0);" rel="external nofollow">
+                <i class="fas fa-moon" style="font-size: 1rem;"></i>
+                <span>显示模式</span>
+            </a>
+        </div>
+        
+        <div class="menus_items">
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 文库</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/archives/">
+                                <i class="fas fa-box-archive"></i>
+                                <span> 文章列表</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/categories/">
+                                <i class="fas fa-cube"></i>
+                                <span> 全部分类</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/tags/">
+                                <i class="fas fa-tags"></i>
+                                <span> 全部标签</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 友链</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/fcircle/">
+                                <i class="fas fa-fish-fins"></i>
+                                <span> 友链鱼塘</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/links/">
+                                <i class="fas fa-user-group"></i>
+                                <span> 友情链接</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="javascript:travelling()">
+                                <i class="fas fa-bus"></i>
+                                <span> 宝藏博主</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+</div>
+        <span class="sidebar-menu-item-title">标签</span>
+        <div class="card-widget card-tags card-archives card-webinfo card-allinfo">
+            <div class="item-headline">
+                <i class="fas fa-tags"></i>
+                <span>标签</span>
+            </div>
+            <div class="card-tag-cloud">
+                
+                    <a href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" style="font-size: 1em; color: #d3d3d3">业务端
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/ADMIN%E7%AB%AF/" style="font-size: 1em; color: #d3d3d3">ADMIN端
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 1em; color: #d3d3d3">代码
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/CHATGPT/" style="font-size: 1em; color: #d3d3d3">CHATGPT
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 1em; color: #d3d3d3">杂谈
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 1em; color: #d3d3d3">闲聊
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 1em; color: #d3d3d3">经验
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/ESLint/" style="font-size: 1em; color: #d3d3d3">ESLint
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/Prettier/" style="font-size: 1em; color: #d3d3d3">Prettier
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" style="font-size: 1em; color: #d3d3d3">配置指南
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" style="font-size: 1em; color: #d3d3d3">代码规范
+                        <sup>1</sup>
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</div>    
+        
+            <div class="post" id="body-wrap">
+                <header class="post-bg" id="page-header">
+    <nav id="nav" class="show">
+    <div id="nav-group">
+        <div id="blog_name">
+            
+            <a id="site-name" href="/" title="返回博客主页">
+                    
+                        <span class="heoicon">Skiyee</span>
+                    
+            </a>
+        </div>
+        <div id="page-name-mask">
+            <div id="page-name">
+                <a id="page-name-text" onclick="acrylic.toTop()">项目里的ESLINT+PRETTIER配置</a>
+            </div>
+        </div>
+        <div id="menus">
+            <div class="menus_items">
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 文库</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/archives/">
+                                <i class="fas fa-box-archive"></i>
+                                <span> 文章列表</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/categories/">
+                                <i class="fas fa-cube"></i>
+                                <span> 全部分类</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/tags/">
+                                <i class="fas fa-tags"></i>
+                                <span> 全部标签</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 友链</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/fcircle/">
+                                <i class="fas fa-fish-fins"></i>
+                                <span> 友链鱼塘</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/links/">
+                                <i class="fas fa-user-group"></i>
+                                <span> 友情链接</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="javascript:travelling()">
+                                <i class="fas fa-bus"></i>
+                                <span> 宝藏博主</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+</div>
+        </div>
+        <!-- <div id="nav-left">
+            <div id="fps-group">
+                <div id="fps">145</div><span class="fpsText">FPS</span>
+            </div>
+        </div> -->
+        <div id="nav-right">
+            
+    <div class="nav-button only-home" id="travellings_button">
+        <a class="site-page"  target="_blank" rel="noopener external nofollow" href="https://www.travellings.cn/go.html" title="开往-友链接力"  width="120">
+            <i class="fa-solid fa-train-subway" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+
+    <div class="nav-button" id="randomPost_button">
+        <a class="site-page" onclick="toRandomPost()"
+            title="随机前往一个文章">
+            <i class="fas fa-shuffle" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+
+
+    <div class="nav-button" id="nav-console">
+        <a class="console_switchbutton" onclick="acrylic.showConsole()"
+        title="显示中控台" href="javascript:void(0);" rel="external nofollow">
+        <i class="fas fa-bars-progress" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+<div class="nav-button" id="nav-totop" onclick="acrylic.toTop()">
+    <a class="totopbtn">
+        <i class="fas fa-arrow-up"></i>
+        <span id="percent">0</span>
+    </a>
+</div>
+<div id="toggle-menu">
+    <a class="site-page">
+        <i class="fas fa-bars fa-fw" style="font-size: 1rem;"></i>
+    </a>
+</div>
+        </div>
+    </div>
+</nav>
+    
+        <div class="coverdiv" id="coverdiv">
+    <img id="post-cover" class="nolazyload" src="/img/hello.jpg" alt="cover">
+</div>
+<div id="post-info">
+    <div id="post-firstinfo">
+        <div class="meta-firstline">
+            <a class="post-meta-original" title="该文章为原创文章，注意版权协议">
+                原创
+            </a>
+            
+            <span class="post-meta-categories">
+                
+                    <a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">开发工具</a>
+                
+            </span>
+            
+            <div class="tag_share">
+                <div class="post-meta__tag-list">
+                    
+                        <a class="post-meta__tags" href="/tags/ESLint/">
+                            <span class="tags-punctuation">#</span>
+                            <span class="tags-name">ESLint</span>
+                        </a>
+                    
+                        <a class="post-meta__tags" href="/tags/Prettier/">
+                            <span class="tags-punctuation">#</span>
+                            <span class="tags-name">Prettier</span>
+                        </a>
+                    
+                        <a class="post-meta__tags" href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/">
+                            <span class="tags-punctuation">#</span>
+                            <span class="tags-name">配置指南</span>
+                        </a>
+                    
+                        <a class="post-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">
+                            <span class="tags-punctuation">#</span>
+                            <span class="tags-name">代码规范</span>
+                        </a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1 class="post-title">项目里的ESLINT+PRETTIER配置</h1>
+    <div id="post-meta">
+        <div class="meta-secondline">
+            <span class="post-meta-date" title="发布于">
+                <i class="post-meta-icon fa-fw fas fa-calendar"></i>
+                <time datetime="2023-07-03T00:47:12+00:00"></time>
+            </span>
+            
+                <span class="post-meta-date" title="更新于">
+                    <i class="post-meta-icon fa-solid fa-clock-rotate-left"></i>
+                    <time datetime="2023-10-06T16:03:11+00:00"></time>
+                </span>
+            
+            
+                <span class="post-meta-position" title="作者IP归属地为火星">
+                    <i class="fas fa-location-dot post-meta-icon"></i>
+                    <span>火星</span>
+                </span>
+            
+            
+            
+                
+        </div>
+    </div>
+</div>
+<section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg"
+    xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+    <defs>
+        <path id="gentle-wave"
+            d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path>
+    </defs>
+    <g class="parallax">
+        <use href="#gentle-wave" x="48" y="0"></use>
+        <use href="#gentle-wave" x="48" y="3"></use>
+        <use href="#gentle-wave" x="48" y="5"></use>
+        <use href="#gentle-wave" x="48" y="7"></use>
+    </g>
+</svg>
+</section>
+
+        
+</header>
+                <main class="layout" id="content-inner">
+    <div id="post">
+        <article class="post-content" id="article-container">
+            <p>哒哒，昨天尝试了很久，终于搞完了ESLINT+PRETTIER的结合，下面先进入安装步骤</p>
+<p>环境：WIN10</p>
+<p>IDE：VSCODE</p>
+<hr>
+<h1 id="ESLINT的安装与配置"><a href="#ESLINT的安装与配置" class="headerlink" title="ESLINT的安装与配置"></a>ESLINT的安装与配置</h1><p>ESLINT就可以叫 代码质量检测工具</p>
+<p>用npm命令安装开发依赖项(devDependencies)，为什么不放到全局呢？</p>
+<p>因为一旦安装所有本地代码都会收到相同的约束，但我只想在项目里这么做</p>
+<h2 id="先介绍每一个包的含义"><a href="#先介绍每一个包的含义" class="headerlink" title="先介绍每一个包的含义"></a>先介绍每一个包的含义</h2><ul>
+<li>eslint：ESLint 是一款用于检查 JavaScript 代码错误、风格和质量的工具。</li>
+<li>eslint-plugin-vue：一个用于在 ESLint 中检查 Vue.js 代码的插件，提供了一些特定于 Vue.js 的规则和功能。</li>
+<li>eslint-plugin-html：一个用于在 ESLint 中检查 HTML 代码的插件，它允许在 JavaScript 代码中包含嵌入的 HTML，并进行检查。</li>
+<li>eslint-config-standard：一套共享的 ESLint 配置，遵循 JavaScript Standard Style，其中包含了一些规范的规则。</li>
+<li>eslint-plugin-import：一个用于在 ESLint 中检查 import&#x2F;export 语句的插件，可以帮助你确保模块的导入和导出正确无误。</li>
+<li>eslint-plugin-node：一个用于在 ESLint 中检查 Node.js 代码的插件，包含了一些特定于 Node.js 的规则。</li>
+<li>eslint-plugin-promise：一个用于在 ESLint 中检查 Promise 使用的插件，可以帮助你编写更可靠的异步代码。</li>
+<li>eslint-plugin-standard：一个用于在 ESLint 中检查 JavaScript 代码的插件，提供了一些与 JavaScript Standard Style 相关的规则和功能。</li>
+</ul>
+<h2 id="安装命令"><a href="#安装命令" class="headerlink" title="安装命令"></a>安装命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">npm install -D eslint eslint-plugin-vue eslint-plugin-html eslint-config-standard eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装ESLINT插件"><a href="#安装ESLINT插件" class="headerlink" title="安装ESLINT插件"></a>安装ESLINT插件</h2><p>从vscode插件搜索ESLINT并安装即可，不需要配置插件，主要靠目录下两个文件来配置</p>
+<h2 id="使用ESLINT"><a href="#使用ESLINT" class="headerlink" title="使用ESLINT"></a>使用ESLINT</h2><p>在项目根目录下手动创建两个文件</p>
+<p>配置：**.eslintrc.js**</p>
+<p>忽略：**.eslintignore.js**</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// .eslintrc.js</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">	<span class="attr">root</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="attr">env</span>: &#123;</span><br><span class="line">		<span class="attr">browser</span>: <span class="literal">true</span>,</span><br><span class="line">		<span class="attr">node</span>: <span class="literal">true</span>,</span><br><span class="line">		<span class="attr">es6</span>: <span class="literal">true</span>,</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">globals</span>: &#123;</span><br><span class="line">		<span class="attr">wx</span>: <span class="string">&#x27;readonly&#x27;</span>,</span><br><span class="line">		<span class="attr">uni</span>: <span class="string">&#x27;readonly&#x27;</span>,</span><br><span class="line">		<span class="attr">uniCloud</span>: <span class="string">&#x27;readonly&#x27;</span>,</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">extends</span>: [<span class="string">&#x27;plugin:vue/recommended&#x27;</span>, <span class="string">&#x27;eslint:recommended&#x27;</span>],</span><br><span class="line">	<span class="attr">rules</span>: &#123;</span><br><span class="line">		<span class="string">&#x27;no-console&#x27;</span>: process.<span class="property">env</span>.<span class="property">NODE_ENV</span> === <span class="string">&#x27;production&#x27;</span> ? <span class="string">&#x27;warn&#x27;</span> : <span class="string">&#x27;off&#x27;</span>, <span class="comment">// 在生产环境下警告不允许使用console</span></span><br><span class="line">		<span class="string">&#x27;no-debugger&#x27;</span>: process.<span class="property">env</span>.<span class="property">NODE_ENV</span> === <span class="string">&#x27;production&#x27;</span> ? <span class="string">&#x27;warn&#x27;</span> : <span class="string">&#x27;off&#x27;</span>, <span class="comment">// 在生产环境下警告不允许使用debugger</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">// 以下是一些具体的规则配置，0表示关闭规则，2表示报错，1表示警告</span></span><br><span class="line">		<span class="string">&#x27;vue/html-indent&#x27;</span>: [<span class="string">&#x27;error&#x27;</span>, <span class="string">&#x27;tab&#x27;</span>], <span class="comment">// 要求缩进为制表符</span></span><br><span class="line">		<span class="string">&#x27;vue/multi-word-component-names&#x27;</span>: <span class="string">&#x27;off&#x27;</span>, <span class="comment">// 要求组件名使用大驼峰命名法</span></span><br><span class="line">		<span class="string">&#x27;no-sequences&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用逗号操作符</span></span><br><span class="line">		<span class="string">&#x27;import/named&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许导入模块的具体导出</span></span><br><span class="line">		<span class="string">&#x27;no-useless-concat&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许不必要的字符串拼接</span></span><br><span class="line">		<span class="string">&#x27;no-unreachable&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在return、throw、continue和break语句之后有不可达代码</span></span><br><span class="line">		<span class="string">&#x27;no-case-declarations&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在case子句中使用词法声明</span></span><br><span class="line">		<span class="string">&#x27;no-continue&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用continue语句</span></span><br><span class="line">		<span class="string">&#x27;no-redeclare&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许重复声明变量</span></span><br><span class="line">		<span class="string">&#x27;block-scoped-var&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在块级作用域外访问变量</span></span><br><span class="line">		<span class="string">&#x27;operator-assignment&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许简化的赋值运算符</span></span><br><span class="line">		<span class="string">&#x27;no-multi-assign&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许连续赋值</span></span><br><span class="line">		<span class="string">&#x27;comma-dangle&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许行末逗号</span></span><br><span class="line">		<span class="string">&#x27;prefer-const&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用let和const</span></span><br><span class="line">		<span class="attr">semi</span>: <span class="number">2</span>, <span class="comment">// 允许省略分号</span></span><br><span class="line">		<span class="string">&#x27;eol-last&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许文件末尾空行</span></span><br><span class="line">		<span class="string">&#x27;linebreak-style&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许不同平台的换行符</span></span><br><span class="line">		<span class="string">&#x27;no-unused-vars&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许未使用的变量</span></span><br><span class="line">		<span class="string">&#x27;no-useless-computed-key&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许不必要的计算属性键名</span></span><br><span class="line">		<span class="string">&#x27;default-case&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许switch语句没有default分支</span></span><br><span class="line">		<span class="string">&#x27;prefer-destructuring&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用对象和数组的解构赋值</span></span><br><span class="line">		<span class="string">&#x27;arrow-parens&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许箭头函数参数使用括号</span></span><br><span class="line">		<span class="string">&#x27;no-var&#x27;</span>: <span class="number">0</span>, <span class="comment">// 要求使用let或const而不是var</span></span><br><span class="line">		<span class="string">&#x27;comma-spacing&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在逗号前后使用任意空格</span></span><br><span class="line">		<span class="string">&#x27;no-mixed-operators&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许混合使用不同的操作符</span></span><br><span class="line">		<span class="attr">radix</span>: <span class="number">0</span>, <span class="comment">// 允许省略parseInt()函数的第二个参数</span></span><br><span class="line">		<span class="string">&#x27;prefer-promise-reject-errors&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用非Error对象作为Promise的拒绝原因</span></span><br><span class="line">		<span class="string">&#x27;arrow-body-style&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许简化的箭头函数体风格</span></span><br><span class="line">		<span class="string">&#x27;prefer-rest-params&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用arguments对象</span></span><br><span class="line">		<span class="string">&#x27;no-restricted-syntax&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用特定的语法</span></span><br><span class="line">		<span class="string">&#x27;vars-on-top&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许变量声明在作用域的任意位置</span></span><br><span class="line">		<span class="string">&#x27;import/no-named-as-default&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用导出对象作为默认导出</span></span><br><span class="line">		<span class="string">&#x27;import/extensions&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在导入语句中不使用文件扩展名</span></span><br><span class="line">		<span class="string">&#x27;import/no-named-as-default-member&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用导出对象的成员作为默认导出</span></span><br><span class="line">		<span class="string">&#x27;guard-for-in&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许不在for...in循环中使用hasOwnProperty进行过滤</span></span><br><span class="line">		<span class="string">&#x27;no-unused-expressions&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许未使用的表达式</span></span><br><span class="line">		<span class="string">&#x27;import/prefer-default-export&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在模块只有一个导出时使用默认导出</span></span><br><span class="line">		<span class="string">&#x27;no-shadow&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许变量名与外层作用域的变量名重复</span></span><br><span class="line">		<span class="string">&#x27;no-nested-ternary&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许嵌套的三元表达式</span></span><br><span class="line">		<span class="string">&#x27;no-empty&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许空的块语句</span></span><br><span class="line">		<span class="attr">eqeqeq</span>: <span class="number">0</span>, <span class="comment">// 允许使用非严格相等运算符</span></span><br><span class="line">		<span class="attr">camelcase</span>: <span class="number">0</span>, <span class="comment">// 允许不符合驼峰命名规则的变量名</span></span><br><span class="line">		<span class="string">&#x27;prefer-template&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用字符串拼接而不是模板字符串</span></span><br><span class="line">		<span class="string">&#x27;dot-notation&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用[]访问对象属性</span></span><br><span class="line">		<span class="string">&#x27;prefer-arrow-callback&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用普通函数而不是箭头函数</span></span><br><span class="line">		<span class="string">&#x27;no-plusplus&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用++和--</span></span><br><span class="line">		<span class="string">&#x27;no-else-return&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在if语句中使用return语句</span></span><br><span class="line">		<span class="string">&#x27;one-var-declaration-per-line&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许每个变量声明都有独立的行</span></span><br><span class="line">		<span class="string">&#x27;consistent-return&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许函数返回值的一致性</span></span><br><span class="line">		<span class="string">&#x27;no-param-reassign&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许对函数参数进行赋值</span></span><br><span class="line">		<span class="string">&#x27;max-len&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许行的最大长度超过限制</span></span><br><span class="line">		<span class="string">&#x27;no-lonely-if&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许没有else的if语句</span></span><br><span class="line">		<span class="string">&#x27;array-callback-return&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在数组的回调函数中不使用return语句</span></span><br><span class="line">		<span class="string">&#x27;prefer-object-spread&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许使用对象扩展运算符</span></span><br><span class="line">		<span class="string">&#x27;import/order&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许导入语句的排序方式</span></span><br><span class="line">		<span class="string">&#x27;import/newline-after-import&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许在导入语句后不加空行</span></span><br><span class="line">		<span class="string">&#x27;func-names&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许函数表达式没有函数名</span></span><br><span class="line">		<span class="string">&#x27;no-underscore-dangle&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许变量名以单个下划线开头或结尾</span></span><br><span class="line">		<span class="string">&#x27;no-useless-escape&#x27;</span>: <span class="number">0</span>, <span class="comment">// 允许不必要的转义字符</span></span><br><span class="line">	&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// .eslintignore.js</span></span><br><span class="line"></span><br><span class="line">node_modules/</span><br><span class="line">uni_modules/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="PRETTIER的安装与配置"><a href="#PRETTIER的安装与配置" class="headerlink" title="PRETTIER的安装与配置"></a>PRETTIER的安装与配置</h1><p>PRETTIER：代码格式化工具</p>
+<p>相比于ESLINT，prettier就相当简单了</p>
+<p>不需要安装包</p>
+<h2 id="安装prettier插件"><a href="#安装prettier插件" class="headerlink" title="安装prettier插件"></a>安装prettier插件</h2><p>从vscode插件搜索prettier安装即可，也不需要配置</p>
+<h2 id="使用PRETTIER"><a href="#使用PRETTIER" class="headerlink" title="使用PRETTIER"></a>使用PRETTIER</h2><p>在项目根目录下手动创建两个文件</p>
+<p>配置：**.prettierrc.js**</p>
+<p>忽略：**.prettierignore.js**</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// .prettierrc.js</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">	<span class="comment">// 单行最大长度</span></span><br><span class="line">	<span class="attr">printWidth</span>: <span class="number">100</span>,</span><br><span class="line">	<span class="comment">// 使用tab缩进，默认false</span></span><br><span class="line">	<span class="attr">useTabs</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="comment">// 设置编辑器每一个水平缩进的空格数</span></span><br><span class="line">	<span class="attr">tabWidth</span>: <span class="number">2</span>,</span><br><span class="line">	<span class="comment">// 在句尾添加分号</span></span><br><span class="line">	<span class="attr">semi</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="comment">// 使用单引号</span></span><br><span class="line">	<span class="attr">singleQuote</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="attr">jsxSingleQuote</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="comment">// 在任何可能的多行中输入尾逗号。</span></span><br><span class="line">	<span class="attr">trailingComma</span>: <span class="string">&#x27;all&#x27;</span>,</span><br><span class="line">	<span class="comment">// 在对象字面量声明所使用的的花括号后（&#123;）和前（&#125;）输出空格</span></span><br><span class="line">	<span class="attr">bracketSpacing</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="comment">// 在多行JSX元素最后一行的末尾添加 &gt; 而使 &gt; 单独一行（不适用于自闭和元素）</span></span><br><span class="line">	<span class="attr">jsxBracketSameLinte</span>: <span class="literal">false</span>,</span><br><span class="line">	<span class="comment">// 为单行箭头函数的参数添加圆括号。</span></span><br><span class="line">	<span class="attr">alwaysParens</span>: <span class="string">&#x27;always&#x27;</span>,</span><br><span class="line">	<span class="comment">// 行结束</span></span><br><span class="line">	<span class="attr">endOfLine</span>: <span class="string">&#x27;auto&#x27;</span>,</span><br><span class="line">	<span class="attr">vueIndentScriptAndStyle</span>: <span class="literal">true</span>, <span class="comment">//是否缩进Vue 文件中的代码&lt;script&gt;和&lt;style&gt;标签</span></span><br><span class="line">	<span class="attr">htmlWhitespaceSensitivity</span>: <span class="string">&#x27;ignore&#x27;</span>, <span class="comment">//HTML 空白敏感度</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// .prettierignore.js</span></span><br><span class="line"></span><br><span class="line">node_modules/</span><br><span class="line">uni_modules/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>好了，基本的配置到此就结束了，这些配置随着项目的开发，会有所改变，但安装到成型基本是不会变化的</p>
+<p>see ya~</p>
+
+        </article>
+        <div class="post-tools" id="post-tools">
+            <div class="post-tools-left">
+                
+                <div class="share-link mobile">
+    <div class="share-qrcode">
+        <div class="share-button" title="使用手机访问这篇文章">
+            <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="share-main">
+            <div class="share-main-all">
+                <div id="qrcode" title="https://skiyee.github.io/posts/2330045d.html">
+                </div>
+                <div class="reward-dec">使用手机访问这篇文章</div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            new QRCode(document.getElementById("qrcode"), "https://skiyee.github.io/posts/2330045d.html");
+        </script>
+    </div>
+</div>
+                <div class="share-link weibo"><a class="share-button" target="_blank"
+    href="https://service.weibo.com/share/share.php?title=项目里的ESLINT+PRETTIER配置&amp;url=https://skiyee.github.io/posts/2330045d.html&amp;pic=/img/hello.jpg"
+    title="分享到微博" rel="noopener external nofollow noreferrer noopener">
+    <i class="fab fa-weibo" style="font-size:22px"></i>
+</a>
+</div>
+<div class="share-link copyurl">
+<div class="share-button" id="post-share-url" title="复制链接" onclick="acrylic.copyPageUrl()">
+    <i class="fas fa-link"></i>
+</div>
+</div>
+            </div>
+            <div class="post-tools-right">
+                <div class="tag_share">
+                    <div class="post-meta__tag-list">
+                        
+                            <a href="/tags/ESLint/" class="post-meta__tags">
+                                <span class="tags-punctuation">#</span>
+                                ESLint
+                                <span class="tagsPageCount">1</span>
+                            </a>
+                        
+                            <a href="/tags/Prettier/" class="post-meta__tags">
+                                <span class="tags-punctuation">#</span>
+                                Prettier
+                                <span class="tagsPageCount">1</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" class="post-meta__tags">
+                                <span class="tags-punctuation">#</span>
+                                配置指南
+                                <span class="tagsPageCount">1</span>
+                            </a>
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" class="post-meta__tags">
+                                <span class="tags-punctuation">#</span>
+                                代码规范
+                                <span class="tagsPageCount">1</span>
+                            </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="post-copyright">
+    <div class="post-copyright__author">
+        <a class="post-copyright__original" title="该文章为原创文章，注意版权协议">原创</a>
+        <a class="post-copyright-title" href="#">
+            <span>项目里的ESLINT+PRETTIER配置</span>
+        </a>
+    </div>
+    <div class="post-copyright__type">
+        <span class="post-copyright-info" id="post-copyright-url">
+            <a href="/posts/2330045d.html">https://skiyee.github.io/posts/2330045d.html</a>
+        </span>
+        <button class="post-copyright-copybtn" onclick="acrylic.copyPageUrl()">
+            <i class="fas fa-paste copy-btn"></i>
+        </button>
+    </div>
+    <div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用 <a
+                href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 协议，完整转载请注明来自 <a
+                href="/">Skiyee&#39;s Blog</a>
+            </span>
+        </div>
+</div>
+        <nav class="pagination-post" id="pagination">
+    
+        <div class="prev-post pull-left">
+            <a href="/posts/9241d1cf.html">
+                <div class="pagination-info">
+                    <div class="label">上一篇</div>
+                    <div class="prev_info">业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结</div>
+                </div>
+            </a>
+        </div>
+        <div class="next-post pull-right">
+            <a href="/posts/1bfb7078.html">
+                <div class="pagination-info">
+                    <div class="label">下一篇</div>
+                    <div class="next_info">关于GPT3.5的代码重构😲</div>
+                </div>
+            </a>
+        </div>
+    
+</nav>
+            
+    </div>
+    <div class="aside-content" id="aside-content">
+    
+    
+        
+        <div class="card-widget card-info">
+    <div class="card-content">
+        <div class="card-info-avatar is-center">
+            <div class="author-info__sayhi" id="author-info__sayhi">
+            </div>
+            <div class="author-info__name">
+                Skiyee
+            </div>
+            <div class="author-info__description">Aoh! 下次再来补全</div>
+        </div>
+    </div>
+    <div class="banner-button-group">
+        <a class="banner-button" href="/">
+            <i class="fas fa-circle-chevron-right"></i>
+            <span class="banner-button-text">个人主页</span>
+        </a>
+    </div>
+    <div class="card-info-social-icons is-center">
+        
+            <a class="social-icon" target="_blank" rel="noopener" href="https://github.com/Skiyee" title="Github">
+                <i class="fa-brands fa-github"></i>
+            </a>
+        
+    </div>
+</div>
+     
+    
+    <div class="sticky_layout">
+        
+            <div class="card-widget" id="card-toc">
+    <div class="item-headline">
+        <i class="fas fa-bars"></i>
+        <span>文章目录</span>
+    </div>
+    <div class="toc-content" id="toc-content">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ESLINT%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">ESLINT的安装与配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E4%BB%8B%E7%BB%8D%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%8C%85%E7%9A%84%E5%90%AB%E4%B9%89"><span class="toc-text">先介绍每一个包的含义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%91%BD%E4%BB%A4"><span class="toc-text">安装命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85ESLINT%E6%8F%92%E4%BB%B6"><span class="toc-text">安装ESLINT插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8ESLINT"><span class="toc-text">使用ESLINT</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PRETTIER%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">PRETTIER的安装与配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85prettier%E6%8F%92%E4%BB%B6"><span class="toc-text">安装prettier插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8PRETTIER"><span class="toc-text">使用PRETTIER</span></a></li></ol></li></ol>
+    </div>
+</div>
+            
+        
+            
+        <div class="card-widget card-recent-post">
+    <div class="item-headline">
+        <i class="fas fa-list-ol"></i>
+        <span>最近发布</span>
+    </div>
+    <div class="aside-list">
+        
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/fafd104f.html" title="阅读代码得到的经验">
+                    <img
+                        alt="阅读代码得到的经验"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/fafd104f.html">
+                            开发经验
+                        </a>
+                    
+                    <a class="title" href="/posts/fafd104f.html" title="阅读代码得到的经验">
+                        阅读代码得到的经验
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+                    <img
+                        alt="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/9241d1cf.html">
+                            KS项目
+                        </a>
+                    
+                    <a class="title" href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+                        业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+                    <img
+                        alt="项目里的ESLINT+PRETTIER配置"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/2330045d.html">
+                            开发工具
+                        </a>
+                    
+                    <a class="title" href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+                        项目里的ESLINT+PRETTIER配置
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+                    <img
+                        alt="关于GPT3.5的代码重构😲"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/1bfb7078.html">
+                            人工智能
+                        </a>
+                    
+                    <a class="title" href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+                        关于GPT3.5的代码重构😲
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+                    <img
+                        alt="欢迎来到我的博客"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/b250e9bb.html">
+                            胡言乱语
+                        </a>
+                    
+                    <a class="title" href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+                        欢迎来到我的博客
+                    </a>
+                </div>
+            </div>
+            
+    </div>
+</div>
+     
+        
+    </div>
+</div> 
+</main>
+                <footer id="footer">
+                    <div id="footer_deal">
+	
+	<a class="deal_link" href="/" rel="external nofollow" title="Github">
+		<i class="fa-brands fa-github"></i>
+	</a>
+	
+	<img class="footer_mini_logo" src="/style/img/avatar.jpg" title="返回顶部" onclick="acrylic.toTop()" />
+	
+	<a class="deal_link" href="/" rel="external nofollow" title="bilibili">
+		<i class="fa-brands fa-bilibili"></i>
+	</a>
+	
+</div>
+<div id="heo-footer">
+	 
+</div>
+<div id="footer-section">
+	<div class="footer-section-links">
+		<div class="footer-section-left">
+			<div id="footer-section-tips">
+				<div class="copyright">
+					©2023 - 2023 By
+					<a class="footer-section-link" href="/" rel="external nofollow">Skiyee</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-section-right">
+			<a class="footer-section-link" href="/rss/">订阅</a>
+			
+			<a class="footer-section-link cc" target="_blank" href="https://creativecommons.org/licenses/by/4.0/" title="cc协议">
+				<i class="fa-solid fa-closed-captioning"></i>
+			</a>
+		</div>
+	</div>
+</div>
+
+                </footer>
+            </div>
+         
+        <div>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    
+
+<script src="/lib/pjax.min.js"></script>
+
+
+
+<script src="/lib/snackbar.min.js"></script>
+
+
+    
+<script src="/lib/view-image.min.js"></script>
+
+
+
+    
+<link rel="stylesheet" href="/lib/swiper.min.css">
+
+    
+<script src="/lib/swiper.min.js"></script>
+
+
+<div id="js-pjax">
+    
+     
+</div>
+
+
+    
+<script src="/js/extend/covercolor/web.js"></script>
+
+        
+
+
+    <script>
+  let pjaxSelectors = [
+    'title',
+    '#body-wrap',
+    '#site-config',
+    'meta[name="description"]',
+    '#js-pjax'
+  ]
+  
+  const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+  })
+
+  document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+      pjax.loadUrl('/404.html')
+    }
+  })
+</script>
+    
+</div>
+        
+     
+        <div class="needEndHide" id="nav-music" onclick="acrylic.musicToggle()">
+    <div id="nav-music-hoverTips">音乐已暂停</div>
+    <meting-js id="1708664797" server="tencent" type="playlist" mutex="true"
+        preload="none" data-lrctype="0" order="random" theme="var(--heo-main)"></meting-js>
+</div>
+    
+    </body>
+</html>
+<script>const posts=["posts/fafd104f.html","posts/9241d1cf.html","posts/2330045d.html","posts/1bfb7078.html","posts/b250e9bb.html"];function toRandomPost(){ window.pjax ? pjax.loadUrl('/'+posts[Math.floor(Math.random()*posts.length)]) : window.open('/'+posts[Math.floor(Math.random()*posts.length)], "_self"); };</script>

@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skiyee&#39;s Blog</title>
+<noscript>开启Javascript是必要的</noscript>
+<link rel="icon" type="image/x-icon" href="/style/svg/favicon.svg">
+<link rel="apple-touch-icon" href="/style/svg/favicon.svg">
+<meta name="apple-mobile-web-app-title" content="Skiyee&#39;s Blog">
+<link rel="bookmark" href="/style/svg/favicon.svg">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/style/svg/favicon.svg">
+<meta name="description" content="分享生活、编程、UI和三维">
+<meta name="theme-color" content="#1C1C1F">
+<link rel="stylesheet" href="/css/var.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/custom.css">
+
+
+    <script data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}" src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/pace/1.2.4/pace.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+<link rel="stylesheet" href="/lib/snackbar.min.css">
+
+
+<script src="/lib/qrcode.min.js"></script>
+
+
+
+
+
+<script>var GLOBALCONFIG = {"root":"/","runtime":"2023-06-16 00:00:00","lazyload":{"enable":false,"error":"/style/img/avatar.jpg"},"hightlight":{"enable":true,"limit":200},"lightbox":true,"randomlinks":false,"lang":{"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"recent":"最近","yesterday":"昨天","berforeyesterday":"前天","daybefore":"天前","runtime":"天"},"sayhello":{"morning":"😁早上好","noon":"😆中午好","afternoon":"😄下午好","night":"🥱晚上好","goodnight":"😴晚安","iam":"!  我是"},"search":{"empty":"搜索结果为空","hit":"已为您找到 ${query} 条结果","placeholder":"输入关键词快速查找"}},"covercolor":true,"comment":{"enable":false,"twikooUrl":null}};</script><script id="site-config">var PAGECONFIG = {"is_home":true,"is_post":false,"is_page":false,"page":false};</script>
+    <meta name="generator" content="Hexo 6.3.0"></head>
+    <body id="body">
+        
+            <div id="loading-box" onclick="preloader.endLoading();" class style="zoom: 1;">
+    <div class="loading-bg">
+        <img class="loading-img nolazyload" alt="loading image"
+            src="/style/img/avatar.jpg">
+        </div>
+</div>
+<script>
+    const preloader = {
+        endLoading: () => {
+            document.getElementById('loading-box').classList.add("loaded")
+        },
+        initLoading: () => {
+            document.getElementById('loading-box').classList.remove("loaded")
+        },
+        removePaceDone: () => {
+            document.getElementById('body').classList = 'pace-done'
+        }
+    }
+    window.addEventListener('load',()=> { preloader.endLoading() })
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+</script>
+<style>
+    #loading-box {
+        -webkit-user-select: none;
+    }
+
+    #loading-box .loading-bg {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: var(--heo-background);
+        z-index: 1999;
+        opacity: 1;
+        transition: 0.2s;
+        pointer-events: all;
+        animation: showLoading 0.3s 0s backwards;
+    }
+
+    #loading-box.loaded .loading-bg {
+        pointer-events: none;
+        transition: 0.2s;
+        animation: hideLoading 0.3s 0s forwards;
+    }
+
+    #loading-box .loading-img {
+        width: 100px;
+        margin: auto;
+        animation-duration: 0.2s;
+        animation-name: loadingAction;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+    @keyframes loadingAction {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0.6;
+        }
+    }
+
+    @keyframes hideLoading {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes showLoading {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+        
+        <div id="console" style="zoom: 1;" class="">
+    <div class="close-btn" onclick="acrylic.hideConsole()" href="javascript:void(0);">
+        <i class="fas fa-circle-xmark"></i>
+    </div>
+    
+        <div class="console-card-group">
+            <div class="console-card-group-left">
+                <div class="console-card" id="card-newest-comments" onclick="acrylic.hideConsole()">
+                    <div class="card-content">
+                        <div class="author-content-item-tips">互动</div>
+                        <div class="author-content-item-title">最新评论</div>
+                    </div>
+                    <div class="aside-list"></div>
+                </div>
+    
+            </div>
+            <div class="console-card-group-right">
+                <div class="console-card tags" onclick="acrylic.hideConsole()">
+                    <div class="card-content">
+                        <div class="author-content-item-tips">标签</div>
+                        <div class="author-content-item-title">寻找感兴趣的领域</div>
+                    </div>
+                    <div class="card-tag-cloud">
+                        
+                            <a href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">业务端<sup>1</sup></a>
+                        
+                            <a href="/tags/ADMIN%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">ADMIN端<sup>1</sup></a>
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 0.8rem; color: #d3d3d3">代码<sup>1</sup></a>
+                        
+                            <a href="/tags/CHATGPT/" style="font-size: 0.8rem; color: #d3d3d3">CHATGPT<sup>1</sup></a>
+                        
+                            <a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 0.8rem; color: #d3d3d3">杂谈<sup>1</sup></a>
+                        
+                            <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 0.8rem; color: #d3d3d3">闲聊<sup>1</sup></a>
+                        
+                            <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 0.8rem; color: #d3d3d3">经验<sup>1</sup></a>
+                        
+                            <a href="/tags/ESLint/" style="font-size: 0.8rem; color: #d3d3d3">ESLint<sup>1</sup></a>
+                        
+                            <a href="/tags/Prettier/" style="font-size: 0.8rem; color: #d3d3d3">Prettier<sup>1</sup></a>
+                        
+                            <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" style="font-size: 0.8rem; color: #d3d3d3">配置指南<sup>1</sup></a>
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" style="font-size: 0.8rem; color: #d3d3d3">代码规范<sup>1</sup></a>
+                        
+                    </div>
+                </div>
+                <div class="console-card history" onclick="acrylic.hideConsole()">
+                    <ul class="card-archive-list">
+    
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-10/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-10</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-08/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-08</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-07/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-07</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023-06/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023-06</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+        
+</ul>
+
+                </div>
+            </div>
+        </div>
+    
+    
+    <div class="button-group">
+        <div class="console-btn-item"> <a class="darkmode_switchbutton" onclick="acrylic.switchDarkMode()" title="显示模式切换"
+                href="javascript:void(0);" rel="external nofollow" data-pjax-state=""><i class="fas fa-moon"
+                    style="font-size: 1rem;"></i></a></div>
+        
+    </div>
+    <div class="console-mask" onclick="acrylic.hideConsole()" href="javascript:void(0);" rel="external nofollow"></div>
+</div>
+        <div id="sidebar" style="zoom: 1;">
+    <div id="menu-mask" style="display: none;"></div>
+    <div id="sidebar-menus" class>
+        <span class="sidebar-menu-item-title">功能</span>
+        <div class="sidebar-menu-item">
+            <a class="darkmode_switchbutton menu-child" onclick="acrylic.switchDarkMode()" title="显示模式切换"
+                href="javascript:void(0);" rel="external nofollow">
+                <i class="fas fa-moon" style="font-size: 1rem;"></i>
+                <span>显示模式</span>
+            </a>
+        </div>
+        
+        <div class="menus_items">
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 文库</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/archives/">
+                                <i class="fas fa-box-archive"></i>
+                                <span> 文章列表</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/categories/">
+                                <i class="fas fa-cube"></i>
+                                <span> 全部分类</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/tags/">
+                                <i class="fas fa-tags"></i>
+                                <span> 全部标签</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 友链</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/fcircle/">
+                                <i class="fas fa-fish-fins"></i>
+                                <span> 友链鱼塘</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/links/">
+                                <i class="fas fa-user-group"></i>
+                                <span> 友情链接</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="javascript:travelling()">
+                                <i class="fas fa-bus"></i>
+                                <span> 宝藏博主</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+</div>
+        <span class="sidebar-menu-item-title">标签</span>
+        <div class="card-widget card-tags card-archives card-webinfo card-allinfo">
+            <div class="item-headline">
+                <i class="fas fa-tags"></i>
+                <span>标签</span>
+            </div>
+            <div class="card-tag-cloud">
+                
+                    <a href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" style="font-size: 1em; color: #d3d3d3">业务端
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/ADMIN%E7%AB%AF/" style="font-size: 1em; color: #d3d3d3">ADMIN端
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 1em; color: #d3d3d3">代码
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/CHATGPT/" style="font-size: 1em; color: #d3d3d3">CHATGPT
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 1em; color: #d3d3d3">杂谈
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 1em; color: #d3d3d3">闲聊
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 1em; color: #d3d3d3">经验
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/ESLint/" style="font-size: 1em; color: #d3d3d3">ESLint
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/Prettier/" style="font-size: 1em; color: #d3d3d3">Prettier
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" style="font-size: 1em; color: #d3d3d3">配置指南
+                        <sup>1</sup>
+                    </a>
+                
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" style="font-size: 1em; color: #d3d3d3">代码规范
+                        <sup>1</sup>
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</div>    
+        
+            <div class="page" id="body-wrap">
+                <header class="not-top-img" id="page-header">
+    <nav id="nav" class="show">
+    <div id="nav-group">
+        <div id="blog_name">
+            
+            <a id="site-name" href="/" title="返回博客主页">
+                    
+                        <span class="heoicon">Skiyee</span>
+                    
+            </a>
+        </div>
+        <div id="page-name-mask">
+            <div id="page-name">
+                <a id="page-name-text" onclick="acrylic.toTop()">Skiyee&#39;s Blog</a>
+            </div>
+        </div>
+        <div id="menus">
+            <div class="menus_items">
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 文库</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/archives/">
+                                <i class="fas fa-box-archive"></i>
+                                <span> 文章列表</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/categories/">
+                                <i class="fas fa-cube"></i>
+                                <span> 全部分类</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/tags/">
+                                <i class="fas fa-tags"></i>
+                                <span> 全部标签</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+        <div class="menus_item">
+            
+                <a class="site-page" href="javascript:void(0);" rel="external nofollow">
+                    <span> 友链</span>
+                </a>
+                <ul class="menus_item_child">
+                    
+                        <li>
+                            <a class="site-page child" href="/fcircle/">
+                                <i class="fas fa-fish-fins"></i>
+                                <span> 友链鱼塘</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="/links/">
+                                <i class="fas fa-user-group"></i>
+                                <span> 友情链接</span>
+                            </a>
+                        </li>
+                    
+                        <li>
+                            <a class="site-page child" href="javascript:travelling()">
+                                <i class="fas fa-bus"></i>
+                                <span> 宝藏博主</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+             
+        </div>
+    
+</div>
+        </div>
+        <!-- <div id="nav-left">
+            <div id="fps-group">
+                <div id="fps">145</div><span class="fpsText">FPS</span>
+            </div>
+        </div> -->
+        <div id="nav-right">
+            
+    <div class="nav-button only-home" id="travellings_button">
+        <a class="site-page"  target="_blank" rel="noopener external nofollow" href="https://www.travellings.cn/go.html" title="开往-友链接力"  width="120">
+            <i class="fa-solid fa-train-subway" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+
+    <div class="nav-button" id="randomPost_button">
+        <a class="site-page" onclick="toRandomPost()"
+            title="随机前往一个文章">
+            <i class="fas fa-shuffle" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+
+
+    <div class="nav-button" id="nav-console">
+        <a class="console_switchbutton" onclick="acrylic.showConsole()"
+        title="显示中控台" href="javascript:void(0);" rel="external nofollow">
+        <i class="fas fa-bars-progress" style="font-size: 1rem;"></i>
+        </a>
+    </div>
+
+<div class="nav-button" id="nav-totop" onclick="acrylic.toTop()">
+    <a class="totopbtn">
+        <i class="fas fa-arrow-up"></i>
+        <span id="percent">0</span>
+    </a>
+</div>
+<div id="toggle-menu">
+    <a class="site-page">
+        <i class="fas fa-bars fa-fw" style="font-size: 1rem;"></i>
+    </a>
+</div>
+        </div>
+    </div>
+</nav>
+        
+</header>
+                <div id="home_top">
+    
+        <div class="bbTimeList container" id="bbTimeList">
+    <i class="bber-logo fa-regular fa-bell icon-bblogo" onclick="pjax.loadUrl('/says/')"></i>
+    <div class="swiper-container swiper-no-swiping swiper-container-initialized swiper-container-vertical swiper-container-pointer-events"
+        id="bbtalk" tabindex="-1" onclick="pjax.loadUrl('/says/')">
+        <div class="swiper-wrapper" id="bber-talk">
+            
+                
+                <div class="li-style swiper-slide">
+                    有点累，但还坚持着不是？
+                </div>
+            
+                
+                <div class="li-style swiper-slide">
+                    今天要谢谢一位朋友，帮我把证件寄了回来，真好! LOVE YOU 😘
+                </div>
+            
+                
+                <div class="li-style swiper-slide">
+                    Hello world
+                </div>
+            
+        </div>
+    </div>
+    <i class="bber-gotobb fas fa-arrow-circle-right" title="查看全文" onclick="pjax.loadUrl('/says/')"></i>
+</div>
+    
+    
+        <div class="recent-top-post-group" id="recent-top-post-group">
+    <div class="recent-post-top" id="recent-post-top">
+        <div id="bannerGroup">
+            <div id="banners">
+                <div class="banners-title">
+    <div class="banners-title-big">
+        分享所学<br>与所见所闻
+    </div>
+    <div class="banners-title-small">
+        skiyee.github.io
+    </div>
+</div>
+<div class="tags-group-all">
+    <div class="tags-group-wrapper">
+        
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #989bf8">
+                        <img src="/img/icon/ae.png" title="AE">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/Sketch.png" title="Sketch">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #57b6e6">
+                        <img src="/img/icon/docker.png" title="Docker">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #4082c3">
+                        <img src="/img/icon/ps.png" title="ps">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/FinalCutPro.png" title="FinalCutPro">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/Python.png" title="Python">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #eb6840">
+                        <img src="/img/icon/Swift.png" title="Swift">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #8f55ba">
+                        <img src="/img/icon/Principle.png" title="Principle">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #f29e39">
+                        <img src="/img/icon/illustrator.png" title="illustrator">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #2c51db">
+                        <img src="/img/icon/CSS3.png" title="CSS3">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #f7cb4f">
+                        <img src="/img/icon/JS.png" title="JS">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #df5b40">
+                        <img src="/img/icon/git.png" title="Git">
+                    </div>
+                
+                    </div>
+                
+               
+        
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #989bf8">
+                        <img src="/img/icon/ae.png" title="AE">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/Sketch.png" title="Sketch">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #57b6e6">
+                        <img src="/img/icon/docker.png" title="Docker">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #4082c3">
+                        <img src="/img/icon/ps.png" title="ps">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/FinalCutPro.png" title="FinalCutPro">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #ffffff">
+                        <img src="/img/icon/Python.png" title="Python">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #eb6840">
+                        <img src="/img/icon/Swift.png" title="Swift">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #8f55ba">
+                        <img src="/img/icon/Principle.png" title="Principle">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #f29e39">
+                        <img src="/img/icon/illustrator.png" title="illustrator">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #2c51db">
+                        <img src="/img/icon/CSS3.png" title="CSS3">
+                    </div>
+                
+                    </div>
+                
+            
+                
+                
+                    <div class="tags-group-icon-pair">
+                    
+                    <div class="tags-group-icon" style="background: #f7cb4f">
+                        <img src="/img/icon/JS.png" title="JS">
+                    </div>
+                
+            
+                
+                    
+                    <div class="tags-group-icon" style="background: #df5b40">
+                        <img src="/img/icon/git.png" title="Git">
+                    </div>
+                
+                    </div>
+                
+               
+            
+    </div>
+</div>
+<a id="banner-hover" onclick="toRandomPost()" data-pjax-state="">
+    <span class="bannerText">随便逛逛</span>
+    <i class="fas fa-arrow-right banner-righticon"></i>
+</a>
+            </div>
+            <div class="categoryGroup">
+                <div class="categoryItem" style="box-shadow: var(--heo-shadow-blue);"><a class="categoryButton CB1 bikan"
+        href="/tags/%E7%B2%BE%E9%80%89/">
+        <span class="categoryButtonText">必看精选</span>
+        <i class="fas fa-dove"></i>
+    </a>
+</div>
+<div class="categoryItem" style="box-shadow: var(--heo-shadow-red);">
+    <a class="categoryButton remen" href="/tags/%E7%83%AD%E9%97%A8/">
+        <span class="categoryButtonText">热门文章</span>
+        <i class="fas fa-burn"></i>
+    </a>
+</div>
+<div class="categoryItem" style="box-shadow: var(--heo-shadow-green);">
+    <a class="categoryButton shiyong"
+        href="/tags/%E6%95%99%E7%A8%8B/">
+        <span class="categoryButtonText">实用教程</span>
+        <i class="fas fa-book"></i>
+    </a>
+</div>
+            </div>
+        </div>
+        <div class="topGroup">
+            <style type="text/css">
+    .topGroup .todayCard::after {
+        box-shadow: 0 -109px 133px -9px #006a73 inset;
+    }
+
+    .todayCard-title,
+    .todayCard-tips,
+    .topGroup .banner-button {
+        color: #ffffff;
+    }
+
+    .topGroup .todayCard {
+        background: #006a73;
+    }
+</style>
+
+<div class="todayCard" id="todayCard" onclick="pjax.loadUrl('/')"
+    style="z-index: 1;">
+    <div class="todayCard-info">
+        <div class="todayCard-tips">置顶文章</div>
+        <div class="todayCard-title">Hello I&#39;m Skiyee</div>
+    </div>
+    <div class="todayCard-cover nolazyload"
+        style="background: url('/style/img/avatar.jpg') no-repeat center /cover">
+    </div>
+    <div class="banner-button-group"><a class="banner-button"
+            onclick="window.event.cancelBubble=true;acrylic.hideTodayCard();">
+            <i class="fas fa-circle-plus"></i>
+            <span class="banner-button-text">更多推荐</span>
+        </a>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+    
+</div>
+<main class="layout" id="content-inner">
+    <div class="recent-posts" id="recent-posts">
+        <div id="category-bar">
+            <div class="category-bar-items" id="category-bar-items">
+    <div class="category-bar-item select" id="category-bar-home">
+        <a href="/">首页</a>
+    </div>
+    
+        <div class="category-bar-item ">
+            <a href="/categories/KS%E9%A1%B9%E7%9B%AE/">KS项目</a>
+        </div>
+    
+        <div class="category-bar-item ">
+            <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a>
+        </div>
+    
+        <div class="category-bar-item ">
+            <a href="/categories/%E8%83%A1%E8%A8%80%E4%B9%B1%E8%AF%AD/">胡言乱语</a>
+        </div>
+    
+        <div class="category-bar-item ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>
+        </div>
+    
+        <div class="category-bar-item ">
+            <a href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">开发工具</a>
+        </div>
+    
+</div>
+<a class="category-bar-more" href="/categories/">更多</a>
+
+        </div>
+        
+            <div class="recent-post-item" onclick="pjax.loadUrl('/posts/fafd104f.html')">
+    <div class="post_cover left_radius">
+        <a href="/posts/fafd104f.html" title="阅读代码得到的经验">
+            <img class="post_bg" alt="阅读代码得到的经验" src="/img/hello.jpg">
+        </a>
+    </div>
+    <div class="recent-post-info">
+        <div class="recent-post-info-top">
+            <div class="recent-post-info-top-tips">
+                
+                    <span class="original">开发经验</span>
+                
+            </div>
+            <a class="article-title" href="/posts/fafd104f.html" title="阅读代码得到的经验">
+                阅读代码得到的经验
+            </a>
+        </div>
+        <div class="article-meta-wrap">
+            <span class="article-meta tags">
+                
+                    <a class="article-meta__tags" href="/tags/%E7%BB%8F%E9%AA%8C/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        经验
+                    </a>
+                
+            </span>
+            <span class="post-meta-date">
+                <time datetime="2023-10-04T13:57:33+00:00"></time>
+            </span>
+        </div>
+    </div>
+</div>
+        
+            <div class="recent-post-item" onclick="pjax.loadUrl('/posts/9241d1cf.html')">
+    <div class="post_cover left_radius">
+        <a href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+            <img class="post_bg" alt="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结" src="/img/hello.jpg">
+        </a>
+    </div>
+    <div class="recent-post-info">
+        <div class="recent-post-info-top">
+            <div class="recent-post-info-top-tips">
+                
+                    <span class="original">KS项目</span>
+                
+            </div>
+            <a class="article-title" href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+                业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结
+            </a>
+        </div>
+        <div class="article-meta-wrap">
+            <span class="article-meta tags">
+                
+                    <a class="article-meta__tags" href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        业务端
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/ADMIN%E7%AB%AF/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        ADMIN端
+                    </a>
+                
+            </span>
+            <span class="post-meta-date">
+                <time datetime="2023-08-01T17:31:58+00:00"></time>
+            </span>
+        </div>
+    </div>
+</div>
+        
+            <div class="recent-post-item" onclick="pjax.loadUrl('/posts/2330045d.html')">
+    <div class="post_cover left_radius">
+        <a href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+            <img class="post_bg" alt="项目里的ESLINT+PRETTIER配置" src="/img/hello.jpg">
+        </a>
+    </div>
+    <div class="recent-post-info">
+        <div class="recent-post-info-top">
+            <div class="recent-post-info-top-tips">
+                
+                    <span class="original">开发工具</span>
+                
+            </div>
+            <a class="article-title" href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+                项目里的ESLINT+PRETTIER配置
+            </a>
+        </div>
+        <div class="article-meta-wrap">
+            <span class="article-meta tags">
+                
+                    <a class="article-meta__tags" href="/tags/ESLint/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        ESLint
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/Prettier/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        Prettier
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        配置指南
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        代码规范
+                    </a>
+                
+            </span>
+            <span class="post-meta-date">
+                <time datetime="2023-07-03T00:47:12+00:00"></time>
+            </span>
+        </div>
+    </div>
+</div>
+        
+            <div class="recent-post-item" onclick="pjax.loadUrl('/posts/1bfb7078.html')">
+    <div class="post_cover left_radius">
+        <a href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+            <img class="post_bg" alt="关于GPT3.5的代码重构😲" src="/img/hello.jpg">
+        </a>
+    </div>
+    <div class="recent-post-info">
+        <div class="recent-post-info-top">
+            <div class="recent-post-info-top-tips">
+                
+                    <span class="original">人工智能</span>
+                
+            </div>
+            <a class="article-title" href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+                关于GPT3.5的代码重构😲
+            </a>
+        </div>
+        <div class="article-meta-wrap">
+            <span class="article-meta tags">
+                
+                    <a class="article-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        代码
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/CHATGPT/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        CHATGPT
+                    </a>
+                
+            </span>
+            <span class="post-meta-date">
+                <time datetime="2023-06-23T07:22:24+00:00"></time>
+            </span>
+        </div>
+    </div>
+</div>
+        
+            <div class="recent-post-item" onclick="pjax.loadUrl('/posts/b250e9bb.html')">
+    <div class="post_cover left_radius">
+        <a href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+            <img class="post_bg" alt="欢迎来到我的博客" src="/img/hello.jpg">
+        </a>
+    </div>
+    <div class="recent-post-info">
+        <div class="recent-post-info-top">
+            <div class="recent-post-info-top-tips">
+                
+                    <span class="original">胡言乱语</span>
+                
+            </div>
+            <a class="article-title" href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+                欢迎来到我的博客
+            </a>
+        </div>
+        <div class="article-meta-wrap">
+            <span class="article-meta tags">
+                
+                    <a class="article-meta__tags" href="/tags/%E6%9D%82%E8%B0%88/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        杂谈
+                    </a>
+                
+                    <a class="article-meta__tags" href="/tags/%E9%97%B2%E8%81%8A/" onclick="window.event.cancelBubble=true;">
+                        <span class="tags-punctuation">#</span>
+                        闲聊
+                    </a>
+                
+            </span>
+            <span class="post-meta-date">
+                <time datetime="2023-06-19T16:06:11+00:00"></time>
+            </span>
+        </div>
+    </div>
+</div>
+        
+        <nav id="pagination">
+    <div class="pagination">
+        
+        <span class="page-number current">1</span>
+    </div>
+</nav>
+    </div>
+    <div class="aside-content" id="aside-content">
+    
+    
+        
+        <div class="card-widget card-info">
+    <div class="card-content">
+        <div class="card-info-avatar is-center">
+            <div class="author-info__sayhi" id="author-info__sayhi">
+            </div>
+            <div class="author-info__name">
+                Skiyee
+            </div>
+            <div class="author-info__description">Aoh! 下次再来补全</div>
+        </div>
+    </div>
+    <div class="banner-button-group">
+        <a class="banner-button" href="/">
+            <i class="fas fa-circle-chevron-right"></i>
+            <span class="banner-button-text">个人主页</span>
+        </a>
+    </div>
+    <div class="card-info-social-icons is-center">
+        
+            <a class="social-icon" target="_blank" rel="noopener" href="https://github.com/Skiyee" title="Github">
+                <i class="fa-brands fa-github"></i>
+            </a>
+        
+    </div>
+</div>
+     
+    
+        
+        <div class="card-widget heo-right-widget" id="card-wechat" style="background: #0099FF ;">
+    <div id="flip-wrapper">
+        <div id="flip-content">
+            <div class="face">
+                <div class="left">
+                    <span class="title">Hello</span>
+                    <span class="desc">就是想说一个Hello <i class="fa-solid fa-play"></i></span>
+                </div>
+            </div>
+            <div class="back face">
+                <div class="left">
+                    <span class="title">World</span>
+                    <span class="desc">肯定对应着World <i class="fa-solid fa-play"></i></span>
+                </div>
+                <img class="nolazyload" src="/style/img/avatar.jpg">
+            </div>
+        </div>
+    </div>
+</div>
+     
+    
+    <div class="sticky_layout">
+            
+        
+            
+        <div class="card-widget card-recent-post">
+    <div class="item-headline">
+        <i class="fas fa-list-ol"></i>
+        <span>最近发布</span>
+    </div>
+    <div class="aside-list">
+        
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/fafd104f.html" title="阅读代码得到的经验">
+                    <img
+                        alt="阅读代码得到的经验"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/fafd104f.html">
+                            开发经验
+                        </a>
+                    
+                    <a class="title" href="/posts/fafd104f.html" title="阅读代码得到的经验">
+                        阅读代码得到的经验
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+                    <img
+                        alt="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/9241d1cf.html">
+                            KS项目
+                        </a>
+                    
+                    <a class="title" href="/posts/9241d1cf.html" title="业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结">
+                        业务端[23-08-01] 完成内容&amp;TODOLIST&amp;内容总结
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+                    <img
+                        alt="项目里的ESLINT+PRETTIER配置"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/2330045d.html">
+                            开发工具
+                        </a>
+                    
+                    <a class="title" href="/posts/2330045d.html" title="项目里的ESLINT+PRETTIER配置">
+                        项目里的ESLINT+PRETTIER配置
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+                    <img
+                        alt="关于GPT3.5的代码重构😲"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/1bfb7078.html">
+                            人工智能
+                        </a>
+                    
+                    <a class="title" href="/posts/1bfb7078.html" title="关于GPT3.5的代码重构😲">
+                        关于GPT3.5的代码重构😲
+                    </a>
+                </div>
+            </div>
+                
+        
+            <div class="aside-list-item">
+                <a class="thumbnail" href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+                    <img
+                        alt="欢迎来到我的博客"
+                        src="/img/hello.jpg">
+                </a>
+                <div class="content">
+                    
+                        <a class="article-recent_post_categories" href="/posts/b250e9bb.html">
+                            胡言乱语
+                        </a>
+                    
+                    <a class="title" href="/posts/b250e9bb.html" title="欢迎来到我的博客">
+                        欢迎来到我的博客
+                    </a>
+                </div>
+            </div>
+            
+    </div>
+</div>
+     
+        
+            
+        <div class="card-widget card-tags card-archives card-webinfo card-allinfo">
+    <div class="card-tag-cloud">
+    
+        <a href="/tags/%E4%B8%9A%E5%8A%A1%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">业务端<sup>1</sup></a>
+    
+        <a href="/tags/ADMIN%E7%AB%AF/" style="font-size: 0.8rem; color: #d3d3d3">ADMIN端<sup>1</sup></a>
+    
+        <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 0.8rem; color: #d3d3d3">代码<sup>1</sup></a>
+    
+        <a href="/tags/CHATGPT/" style="font-size: 0.8rem; color: #d3d3d3">CHATGPT<sup>1</sup></a>
+    
+        <a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 0.8rem; color: #d3d3d3">杂谈<sup>1</sup></a>
+    
+        <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 0.8rem; color: #d3d3d3">闲聊<sup>1</sup></a>
+    
+        <a href="/tags/%E7%BB%8F%E9%AA%8C/" style="font-size: 0.8rem; color: #d3d3d3">经验<sup>1</sup></a>
+    
+        <a href="/tags/ESLint/" style="font-size: 0.8rem; color: #d3d3d3">ESLint<sup>1</sup></a>
+    
+        <a href="/tags/Prettier/" style="font-size: 0.8rem; color: #d3d3d3">Prettier<sup>1</sup></a>
+    
+        <a href="/tags/%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97/" style="font-size: 0.8rem; color: #d3d3d3">配置指南<sup>1</sup></a>
+    
+        <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" style="font-size: 0.8rem; color: #d3d3d3">代码规范<sup>1</sup></a>
+    
+</div>
+    <ul class="card-archive-list">
+    
+     
+        <li class="card-archive-list-item"><a class="card-archive-list-link" onclick="pjax.loadUrl('/archives/2023/')" data-pjax-state=""><span
+            class="card-archive-list-date">2023</span>
+            <div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span
+                    class="card-archive-list-count-unit">篇</span></div>
+            </a>
+        </li>
+        
+</ul>
+
+    <hr>
+    <div class="webinfo">
+    
+        <div class="webinfo-item">
+            <div class="webinfo-item-title">
+                <i class="item-icon fas fa-file-alt"></i>
+                <div class="item-name">文章总数 :</div>
+            </div>
+            <div class="item-count">5</div>
+        </div>
+    
+    
+        
+        
+    
+    
+        <div class="webinfo-item">
+            <div class="webinfo-item-title">
+                <i class="item-icon fas fa-stopwatch"></i>
+                <div class="item-name">建站天数 :</div>
+            </div>
+            <div class="item-count" id="runtimeshow">
+            </div>
+        </div>
+    
+    
+        <div class="webinfo-item">
+            <div class="webinfo-item-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <div class="item-name">最后更新 :</div>
+            </div>
+            <time class="item-count" datetime="Fri Oct 06 2023 16:03:27 GMT+0000 (Coordinated Universal Time)">
+            </time>
+        </div>
+    
+    
+</div>
+</div>
+     
+        
+    </div>
+</div> 
+</main>     
+                <footer id="footer">
+                    <div id="footer_deal">
+	
+	<a class="deal_link" href="/" rel="external nofollow" title="Github">
+		<i class="fa-brands fa-github"></i>
+	</a>
+	
+	<img class="footer_mini_logo" src="/style/img/avatar.jpg" title="返回顶部" onclick="acrylic.toTop()" />
+	
+	<a class="deal_link" href="/" rel="external nofollow" title="bilibili">
+		<i class="fa-brands fa-bilibili"></i>
+	</a>
+	
+</div>
+<div id="heo-footer">
+	 
+</div>
+<div id="footer-section">
+	<div class="footer-section-links">
+		<div class="footer-section-left">
+			<div id="footer-section-tips">
+				<div class="copyright">
+					©2023 - 2023 By
+					<a class="footer-section-link" href="/" rel="external nofollow">Skiyee</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-section-right">
+			<a class="footer-section-link" href="/rss/">订阅</a>
+			
+			<a class="footer-section-link cc" target="_blank" href="https://creativecommons.org/licenses/by/4.0/" title="cc协议">
+				<i class="fa-solid fa-closed-captioning"></i>
+			</a>
+		</div>
+	</div>
+</div>
+
+                </footer>
+            </div>
+         
+        <div>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    
+
+<script src="/lib/pjax.min.js"></script>
+
+
+
+<script src="/lib/snackbar.min.js"></script>
+
+
+    
+<script src="/lib/view-image.min.js"></script>
+
+
+
+    
+<link rel="stylesheet" href="/lib/swiper.min.css">
+
+    
+<script src="/lib/swiper.min.js"></script>
+
+
+<div id="js-pjax">
+    
+     
+</div>
+
+
+    
+<script src="/js/extend/covercolor/web.js"></script>
+
+        
+
+
+    <script>
+  let pjaxSelectors = [
+    'title',
+    '#body-wrap',
+    '#site-config',
+    'meta[name="description"]',
+    '#js-pjax'
+  ]
+  
+  const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+  })
+
+  document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+      pjax.loadUrl('/404.html')
+    }
+  })
+</script>
+    
+</div>
+        
+     
+        <div class="needEndHide" id="nav-music" onclick="acrylic.musicToggle()">
+    <div id="nav-music-hoverTips">音乐已暂停</div>
+    <meting-js id="1708664797" server="tencent" type="playlist" mutex="true"
+        preload="none" data-lrctype="0" order="random" theme="var(--heo-main)"></meting-js>
+</div>
+    
+    </body>
+</html>
+<script>const posts=["posts/fafd104f.html","posts/9241d1cf.html","posts/2330045d.html","posts/1bfb7078.html","posts/b250e9bb.html"];function toRandomPost(){ window.pjax ? pjax.loadUrl('/'+posts[Math.floor(Math.random()*posts.length)]) : window.open('/'+posts[Math.floor(Math.random()*posts.length)], "_self"); };</script>
